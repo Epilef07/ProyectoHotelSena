@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MENU</title>
+    <link rel="shortcut icon" href="/IMAGENES/iconSena.png">
+    <link rel="stylesheet" href="/CSS/habitaciones.css">
+</head>
+<body style="padding-bottom: 0px;">
+    <!--todo este es el encabezado -->
+    <div class="app-container">
+        <div class="app-header">
+            <div class="app-header-left">
+                <button class="navbar-toggle" id="navbar-toggle" title="Toggle Navbar">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <a href="https://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank">
+                    <img src="/IMAGENES/iconSena.png" style="height: 50px; border-radius: 20px" alt="icono sena">
+                </a>
+                <p class="app-name">SENA DREAM</p>
+            </div>
+            <div class="app-header-right">
+                <button class="mode-switch" title="Switch Theme">
+                    <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+                </button>
+                <div class="profile-container">
+                    <button class="profile-btn" id="profile-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <span>Usario</span>
+                        <svg id="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                    <ul class="profile-dropdown" id="profile-dropdown">
+                        <li><a href="/index.html">Cerrar Sesión</a></li>
+                    </ul>
+                    <script>
+                        document.getElementById('profile-btn').addEventListener('click', function() {
+                            var dropdown = document.getElementById('profile-dropdown');
+                            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <!--Aqui es el iconos de navegar-->
+        <div class="app-content">
+        <div class="app-sidebar" id="app-sidebar">
+        <a href="/HTML/menuUser.html" class="app-sidebar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" /></svg>
+        </a>
+        <!--Aqui es el icono de la persona-->
+        <a href="/HTML/huespedUser.html" class=app-sidebar-link>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </a>
+        <!--Aqui es el icono de la habitaciones-->
+        <a href="" class="app-sidebar-link active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed">
+                <path d="M3 7h18v10H3z" />
+                <path d="M3 7v10" />
+                <path d="M21 7v10" />
+                <path d="M3 12h18" />
+                <path d="M7 7v5" />
+                <path d="M17 7v5" />
+            </svg>
+        </a>
+        <!--Aqui es el icono de la tareas-->
+        <a href="/HTML/tareasUser.html" class="app-sidebar-link ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" /></svg>
+            </a>
+        <!--Aqui es el icono de la cuenta-->
+        <a href="/HTML/cuentaUser.html" class="app-sidebar-link">
+            <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-file-text" viewBox="0 0 24 24">
+                <defs />
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+            </svg>
+        </a>
+        </div>
+         <!--Ya empieza todo dentro de los el menu-->
+         <div class="projects-section scrollable">
+            <div class="projects-section-header">
+                <p>HABITACIONES</p>
+            </div>
+            <div class="grid-container">
+                <div class="room">
+                    <div class="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="/IMAGENES/habitacion.501.jpeg" alt="Habitación 1 - Foto 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/IMAGENES/sala501.jpeg" alt="Habitación 1 - Foto 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/IMAGENES/baño.jpeg" alt="Habitación 1 - Foto 3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="room-description">
+                        <h3>Habitación 501</h3>
+                        <p>Habitación: 501
+
+                            Habitación Twin sencilla, dos almohadas en cada una y un cojín en cada una, dos mesas de noche, closet con 4 ganchos, un sillón, un espejo
+                            
+                            En el baño tenemos 2 toallas de cuerpo dos toallas de mano y un rodapiéi o tapete de baño, amenities (dos shampoos, dos rinse, dos jabones de cuerpo, dos kit dental y un gorro de baño) 
+                            
+                            Aire acondicionado, televisor, microondas y nevera pequeña</p>
+                    </div>
+                </div>
+                <div class="room">
+                    <div class="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="/IMAGENES/habitacion.502.jpeg" alt="Habitación 2 - Foto 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/IMAGENES/sala502.jpeg" alt="Habitación 2 - Foto 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/IMAGENES/baño.jpeg" alt="Habitación 2 - Foto 3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="room-description">
+                        <h3>Habitación 502</h3>
+                        <p>Habitación: 502
+
+                            Habitación acomodación doble, cuatro almohadas, un cojín, una mesa de noche, una mesa auxiliar, dos sillones, un espejo
+                            
+                            Una toalla de cuerpo una toalla de mano un rodapié o tapete de baño, amenities (un shampoo, un jabón, un rinse, un kit dental, un gorro de baño, dos jabones de cuerpo)
+                            
+                            Aire acondicionado, microondas, una nevera pequeña, televiso</p>
+                    </div>
+                </div>
+                <div class="room">
+                    <div class="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="/IMAGENES/habitacion503.jpeg" alt="Habitación 3 - Foto 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/IMAGENES/sala503.jpeg" alt="Habitación 3 - Foto 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/IMAGENES/baño.jpeg" alt="Habitación 3 - Foto 3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="room-description">
+                        <h3>Habitación 503</h3>
+                        <p>Habitación 503:
+
+                            Habitación en acomodación doble, cuatro almohadas, un cojín, una mesa de noche, una mesa auxiliar, un sillon, un espejo, closet con cuatro ganchos 
+                            
+                            Una toalla de cuerpo, una toalla de manos, rodapié o tapete de baño, amenities (un shampoo, un rinse, un kit dental, dos jabones de cuerpo, un gorro de baño)
+                            
+                            Aire acondicionado y televisor (habitación 502 no cuenta con microondas ni nevera)</p>
+                    </div>
+                </div>
+            </div>     
+        </div>
+    </div>
+    <div id="imageModal" class="modal">
+        <span id="closeModal" class="close">&times;</span>
+        <div class="modal-content">
+            <div class="modal-slide">
+                <img src="/IMAGENES/habitacion.501.jpeg" alt="Habitación 1 - Foto 1">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/sala501.jpeg" alt="Habitación 1 - Foto 2">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/baño.jpeg" alt="Habitación 1 - Foto 3">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/habitacion.502.jpeg" alt="Habitación 2 - Foto 1">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/sala502.jpeg" alt="Habitación 2 - Foto 2">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/baño.jpeg" alt="Habitación 2 - Foto 3">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/habitacion503.jpeg" alt="Habitación 3 - Foto 1">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/sala503.jpeg" alt="Habitación 3 - Foto 2">
+            </div>
+            <div class="modal-slide">
+                <img src="/IMAGENES/baño.jpeg" alt="Habitación 3 - Foto 3">
+            </div>
+            <a class="prev" id="prev">&#10094;</a>
+            <a class="next" id="next">&#10095;</a>
+        </div>
+    </div>
+    <script src="/JS/habitaciones.js"></script>
+    <script>
+        // Alternar entre modo oscuro y claro
+        document.querySelector('.mode-switch').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        });
+
+        // Alternar visibilidad de la barra de navegación
+        document.getElementById('navbar-toggle').addEventListener('click', function() {
+            var sidebar = document.getElementById('app-sidebar');
+            sidebar.classList.toggle('hidden');
+        });
+
+        const modal = document.getElementById("imageModal");
+        let modalSlides = document.querySelectorAll(".modal-slide");
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            modalSlides.forEach((slide, idx) => {
+                slide.style.display = (idx === index) ? "block" : "none";
+            });
+        }
+
+        // Para cada carrusel se asigna el listener que crea slides dinámicamente
+        document.querySelectorAll(".carousel").forEach(carousel => {
+            carousel.querySelectorAll("img").forEach((img, idx) => {
+                img.addEventListener("click", function() {
+                    modal.style.display = "block";
+                    // Obtener el carrusel actual y sus imágenes
+                    const imgs = carousel.querySelectorAll("img");
+                    // Obtener el contenedor modal-content
+                    const modalContent = document.querySelector(".modal-content");
+                    // Eliminar slides existentes (dejando los botones si están)
+                    modalContent.querySelectorAll(".modal-slide").forEach(slide => slide.remove());
+                    // Clonar cada imagen del carrusel en un nuevo modal-slide
+                    imgs.forEach((imgEl) => {
+                        let slideDiv = document.createElement("div");
+                        slideDiv.className = "modal-slide";
+                        slideDiv.appendChild(imgEl.cloneNode(true));
+                        // Insertar antes de los botones de navegación (si existen) o al inicio
+                        const navBtn = modalContent.querySelector(".prev");
+                        if(navBtn){
+                            modalContent.insertBefore(slideDiv, navBtn);
+                        } else {
+                            modalContent.appendChild(slideDiv);
+                        }
+                    });
+                    // Actualiza la variable modalSlides
+                    modalSlides = document.querySelectorAll(".modal-slide");
+                    currentSlide = idx;
+                    showSlide(currentSlide);
+                });
+            });
+        });
+
+        // Acción para cerrar el modal
+        document.getElementById("closeModal").addEventListener("click", function(){
+            modal.style.display = "none";
+        });
+
+        // Botón anterior
+        document.getElementById("prev").addEventListener("click", function(){
+            currentSlide = (currentSlide - 1 + modalSlides.length) % modalSlides.length;
+            showSlide(currentSlide);
+        });
+
+        // Botón siguiente
+        document.getElementById("next").addEventListener("click", function(){
+            currentSlide = (currentSlide + 1) % modalSlides.length;
+            showSlide(currentSlide);
+        });
+
+        // Cerrar modal si se hace clic fuera del contenido
+        window.addEventListener("click", function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    background-color: #28a745;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+table th {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.info-card {
+    max-width: 500px;
+    margin: 30px auto; /* centra horizontal y da margen vertical */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+.info-card button,
+.info-card form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.info-card button:hover,
+.info-card form button:hover {
+    background-color: #218838;
+}
+
+.info-card form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.info-card form input,
+.info-card form select,
+.info-card form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Estilos para la tarjeta de producto */
+.producto-card {
+    max-width: 200px;
+    margin: 15px auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.producto-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+.producto-card h3 {
+    margin: 10px 0 5px;
+    font-size: 18px;
+}
+.producto-card p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}

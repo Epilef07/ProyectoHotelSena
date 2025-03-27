@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Gestión de Minibar - ADMINISTRACION</title>
+   <link rel="shortcut icon" href="/">
+   <!-- Se utilizan los mismos estilos y scripts que en administrador.html -->
+   <link rel="stylesheet" href="/CSS/administrador.css">
+   <!-- Ajustes específicos para el minibar -->
+   <link rel="stylesheet" href="/CSS/minibar.css">
+   <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/es.js'></script>
+   <style>
+      /* Contenedor de las tarjetas, estilo para mostrar en fila y envolver */
+      #productosContainer {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 15px; /* espacio entre tarjetas */
+         justify-content: center; /* centrar las tarjetas horizontalmente */
+         padding: 10px;
+      }
+
+      /* Estilos para cada tarjeta de producto */
+      .producto-card {
+         background-color: #fff;
+         border-radius: 8px;
+         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+         text-align: center;
+         padding: 10px;
+         width: 200px; /* ancho fijo, se adapta en filas */
+         box-sizing: border-box;
+      }
+
+      .producto-card img {
+         max-width: 100%;
+         height: auto;
+         border-radius: 4px;
+      }
+      .producto-card h3 {
+         margin: 10px 0 5px;
+         font-size: 18px;
+      }
+      .producto-card p {
+         margin: 0;
+         font-size: 16px;
+         color: #555;
+      }
+
+      /* Ejemplo responsivo: en pantallas muy pequeñas, las tarjetas se ajustan al 100% o se reducen */
+      @media (max-width: 480px) {
+         #productosContainer {
+            gap: 10px;
+         }
+         .producto-card {
+            width: 100%;
+         }
+      }
+   </style>
+</head>
+
+<body class="light-mode">
+   <!-- Encabezado -->
+   <div class="app-container">
+      <div class="app-header">
+         <div class="app-header-left">
+            <button class="navbar-toggle" id="navbar-toggle" title="Toggle Navbar">
+               <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M4 6h16M4 12h16M4 18h16"></path>
+               </svg>
+            </button>
+            <a href="https://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank">
+               <img src="/IMAGENES/iconSena.png" style="height:50px; border-radius:20px" alt="icono sena">
+            </a>
+            <p class="app-name">SENA DREAM</p>
+         </div>
+         <div class="app-header-right">
+            <button class="mode-switch" title="Switch Theme">
+               <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+               </svg>
+            </button>
+            <div class="profile-container">
+               <button class="profile-btn" id="profile-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
+                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                  <span>ADMIN</span>
+                  <svg id="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                     <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1 0-.708z" />
+                  </svg>
+               </button>
+               <ul class="profile-dropdown" id="profile-dropdown">
+                  <li><a href="/index.html">Cerrar Sesión</a></li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!-- Cuerpo principal con sidebar y contenido -->
+      <div class="app-content">
+         <!-- Sidebar lateral -->
+         <div class="app-sidebar" id="app-sidebar">
+            <a href="/HTML/menu.html" class="app-sidebar-link">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-home">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+               </svg>
+            </a>
+            <a href="/HTML/huesped.html" class="app-sidebar-link">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                  class="bi bi-person" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+               </svg>
+            </a>
+            <a href="/HTML/habitaciones.html" class="app-sidebar-link">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-bed">
+                  <path d="M3 7h18v10H3z"></path>
+                  <path d="M3 7v10"></path>
+                  <path d="M21 7v10"></path>
+                  <path d="M3 12h18"></path>
+                  <path d="M7 7v5"></path>
+                  <path d="M17 7v5"></path>
+               </svg>
+            </a>
+            <a href="/HTML/tareas.html" class="app-sidebar-link">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-calendar">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+               </svg>
+            </a>
+            <a href="/HTML/cuenta.html" class="app-sidebar-link">
+               <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                  stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  viewBox="0 0 24 24">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+               </svg>
+            </a>
+            <!-- Ícono activo para Minibar -->
+            <a href="/HTML/minibar.html" class="app-sidebar-link active">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-glass">
+                  <path d="M21 2H3"></path>
+                  <path d="M17 2l-2 14H9L7 2"></path>
+                  <path d="M9 22h6"></path>
+               </svg>
+            </a>
+         </div>
+         <!-- Contenido principal: Vista de Minibar -->
+         <div class="projects-section scrollable">
+            <div class="projects-section-header" style="margin-bottom: 0px;">
+               <p>MINIBAR</p>
+            </div>
+            <div class="minibar-content">
+               <!-- Contenedor para el encabezado de Gestión de Minibar y las infocards -->
+               <div class="minibar-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                  <div class="info-cards-container" style="display: flex; gap: 20px;">
+                     <!-- Contenedor combinado (infocard) para Agregar y Buscar Productos -->
+                     <div class="info-card combined-card" style="display: flex; align-items: flex-start; gap: 20px; min-width: 600px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border-radius: 8px; background-color: #f9f9f9;">
+                        <!-- Sección izquierda: Agregar Productos -->
+                        <div class="left-section" style="flex: 1; position: relative;">
+                           <div id="errorMessage" style="color: red; margin-bottom: 10px;"></div>
+                           <div class="actions-header" style="margin-bottom: 10px;">
+                              <button id="mostrarFormularioBtn">Agregar productos</button>
+                           </div>
+                           <form id="inventoryForm" style="display: none; position: relative;">
+                              <!-- Botón de cancelar "x" -->
+                              <button type="button" id="cancelFormBtn" style="
+                                 position: absolute;
+                                 top: -35px;
+                                 right: 8px;
+                                 width: 24px;
+                                 height: 24px;
+                                 background-color: #ff0000;
+                                 border: none;
+                                 border-radius: 4px;
+                                 cursor: pointer;
+                                 font-size: 16px;
+                                 line-height: 24px;
+                                 text-align: center;
+                                 padding: 0;
+                              ">x</button>
+                              <label for="producto">Nombre del Producto:</label>
+                              <input type="text" id="producto" name="producto" required>
+                              
+                              <label for="referencia">Referencia:</label>
+                              <select id="referencia" name="referencia" required>
+                                 <option value="">Seleccione una opción</option>
+                                 <option value="bebidas energeticas">Bebidas Energeticas</option>
+                                 <option value="galletas">Galletas</option>
+                                 <option value="golosinas">Golosinas</option>
+                                 <option value="snaks">Snaks</option>
+                                 <option value="gaseosas">Gaseosas</option>
+                                 <option value="paqueteria">Paqueteria</option>
+                              </select>
+                              
+                              <label for="precio">Precio:</label>
+                              <input type="number" step="0.01" id="precio" name="precio" required>
+                              
+                              <label for="imagen">URL de la Imagen:</label>
+                              <input type="text" id="imagen" name="imagen" required>
+                              
+                              <label for="cantidad">Cantidad:</label>
+                              <input type="number" id="cantidad" name="cantidad" required>
+                              
+                              <button type="submit">Guardar Producto</button>
+                           </form>
+                        </div>
+                        <!-- Sección derecha: Buscar Productos -->
+                        <div class="right-section" style="flex: 1;">
+                           <div class="filter-section" style="margin-bottom: 10px;">
+                              <label for="filterRef" style="font-weight: bold;">Referencia:</label>
+                              <select id="filterRef" style="margin-left: 5px; padding: 5px;">
+                                 <option value="todos">Todos</option>
+                                 <option value="bebidas energeticas">Bebidas Energeticas</option>
+                                 <option value="galletas">Galletas</option>
+                                 <option value="golosinas">Golosinas</option>
+                                 <option value="snaks">Snaks</option>
+                                 <option value="gaseosas">Gaseosas</option>
+                                 <option value="paqueteria">Paqueteria</option>
+                              </select>
+                           </div>
+                           <div class="search-section" style="margin-bottom: 10px;">
+                              <label for="searchName" style="font-weight: bold;">Nombre:</label>
+                              <input type="text" id="searchName" placeholder="Buscar por nombre" style="padding: 5px; margin-left: 5px;">
+                           </div>
+                           <!-- Botón de búsqueda, pequeño con ícono de lupa -->
+                           <button id="buscarBtn" style="
+                                 width: 32px;
+                                 height: 32px;
+                                 background-color: #007bff;
+                                 border: none;
+                                 border-radius: 4px;
+                                 cursor: pointer;
+                                 display: flex;
+                                 align-items: center;
+                                 justify-content: center;
+                                 padding: 0;
+                           ">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" class="bi bi-search" viewBox="0 0 16 16">
+                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                              </svg>
+                           </button>
+                           <div id="searchError" style="color: red; margin-top: 10px;"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Contenedor para mostrar las tarjetas de producto -->
+               <div id="productosContainer"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <script src="/JS/menu.js"></script>
+   <script src="/JS/administrador.js"></script>
+   <script>
+      // Alternar entre modo oscuro y claro
+      document.querySelector('.mode-switch').addEventListener('click', function() {
+         document.body.classList.toggle('dark-mode');
+         document.body.classList.toggle('light-mode');
+      });
+
+      // Alternar visibilidad de la barra lateral
+      document.getElementById('navbar-toggle').addEventListener('click', function() {
+         var sidebar = document.getElementById('app-sidebar');
+         sidebar.classList.toggle('hidden');
+      });
+
+      // Alternar visibilidad del formulario y configuración inicial
+      const mostrarFormularioBtn = document.getElementById('mostrarFormularioBtn');
+      const inventoryForm = document.getElementById('inventoryForm');
+      const productosContainer = document.getElementById('productosContainer');
+      const errorMessage = document.getElementById('errorMessage');
+
+      mostrarFormularioBtn.addEventListener('click', function() {
+         errorMessage.innerText = "";
+         inventoryForm.style.display = 'block';
+         mostrarFormularioBtn.style.display = 'none';
+      });
+
+      inventoryForm.addEventListener('submit', async function(e) {
+         e.preventDefault();
+         errorMessage.innerText = "";
+
+         const producto = document.getElementById('producto').value;
+         const referencia = document.getElementById('referencia').value;
+         const precio = parseFloat(document.getElementById('precio').value).toFixed(2);
+         const imagen = document.getElementById('imagen').value;
+         const cantidad = parseInt(document.getElementById('cantidad').value);
+
+         const nuevoProducto = { 
+            nombre: producto, 
+            referencia, 
+            precio, 
+            imagen, 
+            cantidad 
+         };
+
+         try {
+            const response = await fetch('/api/productos_minibar', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify(nuevoProducto)
+            });
+
+            // Verificar que el response tenga el Content-Type adecuado
+            const contentType = response.headers.get('content-type');
+            let data;
+            if(contentType && contentType.includes("application/json")) {
+               data = await response.json();
+            } else {
+               // Si no es JSON, obtenemos el texto para mostrar el error
+               const text = await response.text();
+               throw new Error("Respuesta inesperada del servidor: " + text);
+            }
+
+            if(data.success) {
+               const card = document.createElement('div');
+               card.className = 'producto-card';
+               card.innerHTML = `
+                  <img src="${imagen}" alt="${producto}">
+                  <h3>${producto}</h3>
+                  <p>Cantidad: ${cantidad}</p>
+               `;
+               productosContainer.appendChild(card);
+
+               inventoryForm.reset();
+               inventoryForm.style.display = 'none';
+               mostrarFormularioBtn.style.display = 'block';
+            } else {
+               errorMessage.innerText = "Error guardando producto: " + data.message;
+               console.error("Error guardando producto:", data.message);
+            }
+         } catch (error) {
+            errorMessage.innerText = "Error en la petición: " + error.message;
+            console.error("Error en la petición:", error);
+         }
+      });
+
+      // Elementos de la infocard de Agregar Productos
+      const mostrarFormularioBtn = document.getElementById('mostrarFormularioBtn');
+      const inventoryForm = document.getElementById('inventoryForm');
+      const productosContainer = document.getElementById('productosContainer');
+      const errorMessage = document.getElementById('errorMessage');
+
+      // Elementos del filtro de Buscar Productos
+      const filterRefSelect = document.getElementById('filterRef');
+      const searchNameInput = document.getElementById('searchName');
+      const buscarBtn = document.getElementById('buscarBtn');
+
+      // Mostrar formulario al presionar "Agregar productos"
+      mostrarFormularioBtn.addEventListener('click', function() {
+         errorMessage.innerText = "";
+         inventoryForm.style.display = 'block';
+         mostrarFormularioBtn.style.display = 'none';
+      });
+
+      // Enviar formulario para guardar producto
+      inventoryForm.addEventListener('submit', async function(e) {
+         e.preventDefault();
+         errorMessage.innerText = "";
+
+         const producto = document.getElementById('producto').value;
+         const referencia = document.getElementById('referencia').value;
+         const precio = parseFloat(document.getElementById('precio').value).toFixed(2);
+         const imagen = document.getElementById('imagen').value;
+         const cantidad = parseInt(document.getElementById('cantidad').value);
+
+         const nuevoProducto = { 
+            nombre: producto, 
+            referencia, 
+            precio, 
+            imagen, 
+            cantidad 
+         };
+
+         try {
+            const response = await fetch('/api/productos_minibar', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify(nuevoProducto)
+            });
+
+            const contentType = response.headers.get('content-type');
+            let data;
+            if(contentType && contentType.includes("application/json")) {
+               data = await response.json();
+            } else {
+               const text = await response.text();
+               throw new Error("Respuesta inesperada del servidor: " + text);
+            }
+
+            if(data.success) {
+               // Crear la tarjeta del producto y asignar la referencia como atributo
+               const card = document.createElement('div');
+               card.className = 'producto-card';
+               card.setAttribute('data-reference', referencia);
+               card.innerHTML = `
+                  <img src="${imagen}" alt="${producto}">
+                  <h3>${producto}</h3>
+                  <p>Cantidad: ${cantidad}</p>
+               `;
+               productosContainer.appendChild(card);
+
+               inventoryForm.reset();
+               inventoryForm.style.display = 'none';
+               mostrarFormularioBtn.style.display = 'block';
+            } else {
+               errorMessage.innerText = "Error guardando producto: " + data.message;
+               console.error("Error guardando producto:", data.message);
+            }
+         } catch (error) {
+            errorMessage.innerText = "Error en la petición: " + error.message;
+            console.error("Error en la petición:", error);
+         }
+      });
+
+      // Funcionalidad de filtrado al presionar el botón Buscar
+      buscarBtn.addEventListener('click', function() {
+         const selectedRef = filterRefSelect.value;
+         const searchName = searchNameInput.value.toLowerCase().trim();
+         const cards = document.querySelectorAll('.producto-card');
+         cards.forEach(card => {
+            const cardRef = card.getAttribute('data-reference');
+            const cardName = card.querySelector('h3').innerText.toLowerCase();
+            let showCard = true;
+            if(selectedRef !== "todos" && cardRef !== selectedRef) {
+               showCard = false;
+            }
+            if(searchName && !cardName.includes(searchName)) {
+               showCard = false;
+            }
+            card.style.display = showCard ? "" : "none";
+         });
+      });
+
+      const cancelFormBtn = document.getElementById('cancelFormBtn');
+      cancelFormBtn.addEventListener('click', function() {
+         inventoryForm.reset();
+         inventoryForm.style.display = 'none';
+         mostrarFormularioBtn.style.display = 'block';
+      });
+   </script>
+   <script>
+      // Elementos del contenedor de resultados y del filtro de Buscar Productos
+      const filterRefSelect = document.getElementById('filterRef');
+      const searchNameInput = document.getElementById('searchName');
+      const buscarBtn = document.getElementById('buscarBtn');
+      const searchError = document.getElementById('searchError');
+
+      // Asumimos que 'productosContainer' ya existe para mostrar las tarjetas resultantes
+      // Función para buscar productos en el servidor
+      buscarBtn.addEventListener('click', async function() {
+          searchError.innerText = ""; // limpiar errores previos
+          const selectedRef = filterRefSelect.value;
+          const searchName = searchNameInput.value.trim();
+
+          try {
+              // Construir parámetros de consulta
+              const params = new URLSearchParams();
+              if(selectedRef && selectedRef !== "todos") {
+                 params.append('referencia', selectedRef);
+              }
+              if(searchName) {
+                 params.append('nombre', searchName);
+              }
+              const response = await fetch('/api/productos_minibar?' + params.toString());
+              
+              // Verificar si la respuesta es exitosa
+              if (!response.ok) {
+                  const text = await response.text();
+                  throw new Error("Error del servidor: " + text);
+              }
+              
+              const data = await response.json();
+
+              // Validar respuesta
+              if(!data.success) {
+                  searchError.innerText = "Error: " + data.message;
+                  console.error("Error en la búsqueda:", data.message);
+                  return;
+              }
+              // Limpiar el contenedor y mostrar los resultados
+              productosContainer.innerHTML = "";
+              if(data.products.length === 0) {
+                  searchError.innerText = "No se encontraron productos.";
+              } else {
+                  data.products.forEach(product => {
+                      const card = document.createElement('div');
+                      card.className = 'producto-card';
+                      card.setAttribute('data-reference', product.referencia);
+                      card.innerHTML = `
+                          <img src="${product.imagen}" alt="${product.nombre}">
+                          <h3>${product.nombre}</h3>
+                          <p>Cantidad: ${product.cantidad}</p>
+                      `;
+                      productosContainer.appendChild(card);
+                  });
+              }
+          } catch (error) {
+              searchError.innerText = "Error en la búsqueda: " + error.message;
+              console.error("Error en la búsqueda:", error);
+          }
+      });
+   </script>
+   <script>
+      document.addEventListener("DOMContentLoaded", () => {
+         // Obtener elementos
+         const mostrarFormularioBtn = document.getElementById('mostrarFormularioBtn');
+         const inventoryForm = document.getElementById('inventoryForm');
+         const errorMessage = document.getElementById('errorMessage');
+         const productosContainer = document.getElementById('productosContainer');
+
+         // Mostrar formulario al hacer clic en "Agregar productos"
+         mostrarFormularioBtn.addEventListener('click', function() {
+            errorMessage.innerText = "";
+            inventoryForm.style.display = 'block';
+            mostrarFormularioBtn.style.display = 'none';
+         });
+
+         // Manejo del envío del formulario para agregar producto
+         inventoryForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            errorMessage.innerText = "";
+
+            // Obtener datos del formulario
+            const producto = document.getElementById('producto').value;
+            const referencia = document.getElementById('referencia').value;
+            const precio = parseFloat(document.getElementById('precio').value).toFixed(2);
+            const imagen = document.getElementById('imagen').value;
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+
+            const nuevoProducto = { 
+               nombre: producto, 
+               referencia, 
+               precio, 
+               imagen, 
+               cantidad 
+            };
+
+            try {
+               const response = await fetch('/api/productos_minibar', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(nuevoProducto)
+               });
+
+               if (!response.ok) {
+                  const text = await response.text();
+                  throw new Error("Error del servidor: " + text);
+               }
+
+               const data = await response.json();
+
+               if(data.success) {
+                  // Crear la tarjeta del producto y asignar la referencia como atributo data-reference
+                  const card = document.createElement('div');
+                  card.className = 'producto-card';
+                  card.setAttribute('data-reference', referencia);
+                  card.innerHTML = `
+                     <img src="${imagen}" alt="${producto}">
+                     <h3>${producto}</h3>
+                     <p>Cantidad: ${cantidad}</p>
+                  `;
+                  productosContainer.appendChild(card);
+
+                  // Limpiar y ocultar el formulario, y volver a mostrar el botón
+                  inventoryForm.reset();
+                  inventoryForm.style.display = 'none';
+                  mostrarFormularioBtn.style.display = 'block';
+               } else {
+                  errorMessage.innerText = "Error guardando producto: " + data.message;
+                  console.error("Error guardando producto:", data.message);
+               }
+            } catch (error) {
+               errorMessage.innerText = "Error en la petición: " + error.message;
+               console.error("Error en la petición:", error);
+            }
+         });
+
+         const cancelFormBtn = document.getElementById('cancelFormBtn');
+         cancelFormBtn.addEventListener('click', function() {
+            inventoryForm.reset();
+            inventoryForm.style.display = 'none';
+            mostrarFormularioBtn.style.display = 'block';
+         });
+      });
+   </script>
+</body>
+
+</html>

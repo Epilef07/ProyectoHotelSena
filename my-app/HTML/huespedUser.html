@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MENU</title>
+    <link rel="shortcut icon" href="/IMAGENES/iconSena.png">
+    <link rel="stylesheet" href="/CSS/huesped.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <div class="app-header-left">
+                <button class="navbar-toggle" id="navbar-toggle" title="Toggle Navbar">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <a href="https://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank">
+                    <img src="/IMAGENES/iconSena.png" style="height: 50px; border-radius: 20px" alt="icono sena">
+                </a>
+                <p class="app-name">SENA DREAM</p>
+            </div>
+            <div class="app-header-right">
+                <button class="mode-switch" title="Switch Theme">
+                    <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+                </button>
+                <div class="profile-container">
+                    <button class="profile-btn" id="profile-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <span>Usario</span>
+                        <svg id="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                    <ul class="profile-dropdown" id="profile-dropdown">
+                        <li><a href="/index.html">Cerrar Sesión</a></li>
+                    </ul>
+                    <script>
+                        document.getElementById('profile-btn').addEventListener('click', function() {
+                            var dropdown = document.getElementById('profile-dropdown');
+                            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="app-content">
+            <div class="app-sidebar" id="app-sidebar">
+                <a href="/HTML/menuUser.html" class="app-sidebar-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                </a>
+                <a href="" class="app-sidebar-link active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </a>
+                <a href="/HTML/habitacionesUser.html" class="app-sidebar-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed">
+                        <path d="M3 7h18v10H3z" />
+                        <path d="M3 7v10" />
+                        <path d="M21 7v10" />
+                        <path d="M3 12h18" />
+                        <path d="M7 7v5" />
+                        <path d="M17 7v5" />
+                    </svg>
+                </a>
+                <a href="/HTML/tareasUser.html" class="app-sidebar-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                </a>
+                <a href="/HTML/cuentaUser.html" class="app-sidebar-link">
+                    <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-file-text" viewBox="0 0 24 24">
+                        <defs />
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                </a>
+            </div>
+            <div class="projects-section">
+                <div class="projects-section-header" style="margin-bottom: 0px;">
+                    <p>HUESPEDES</p>
+                </div>
+                <div class="tab-buttons" style="margin-top: 0px;">
+                    <button id="new-guest-btn" class="active btn">Huesped nuevo</button>
+                    <button id="old-guest-btn" class="btn">Huesped viejo</button>
+                </div>
+                <div id="new-guest-form" class="tab-content active">
+                    <form class="grid-form">
+                        <div class="form-group">
+                            <label for="document-type-new">Tipo de Documento:</label>
+                            <select id="document-type-new" name="document-type-new">
+                                <option value="cc">Cédula de Ciudadanía</option>
+                                <option value="ti">Tarjeta de Identidad</option>
+                                <option value="ce">Cédula de Extranjería</option>
+                                <option value="pep">PEP</option>
+                                <option value="ppt">Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-new">Documento:</label>
+                            <input type="text" id="id-new" name="id-new" placeholder="ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Nombre:</label>
+                            <input type="text" id="name" name="name" placeholder="Nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="surname">Apellido:</label>
+                            <input type="text" id="surname" name="surname" placeholder="Apellido">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Fecha de Nacimiento:</label>
+                            <input type="date" id="birthdate" name="birthdate">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Teléfono:</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Teléfono">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-contact-name">En caso de emergencia contactar a:</label>
+                            <input type="text" id="emergency-contact-name" name="emergency-contact-name" placeholder="Nombre del contacto">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-contact-phone">Teléfono de contacto:</label>
+                            <input type="tel" id="emergency-contact-phone" name="emergency-contact-phone" placeholder="Teléfono del contacto">
+                        </div>
+                        <button type="submit" class="btn">Agregar Huesped</button>
+                        <p id="message" style="color: green;"></p> <!-- Párrafo para mostrar el mensaje -->
+                    </form>
+                </div>
+                <div id="old-guest-form" class="tab-content">
+                    <form class="grid-form">
+                        <div class="form-group">
+                            <label for="document-type">Tipo de Documento:</label>
+                            <select id="document-type" name="document-type">
+                                <option value="cc">Cédula de Ciudadanía</option>
+                                <option value="ti">Tarjeta de Identidad</option>
+                                <option value="ce">Cédula de Extranjería</option>
+                                <option value="pep">PEP</option>
+                                <option value="ppt">Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id">Cedula:</label>
+                            <input type="text" id="id" name="id" placeholder="Cedula">
+                        </div>
+                        <button type="submit" class="btn">Buscar Huesped</button>
+                    </form>
+                    <!-- Tabla para mostrar los datos del huésped -->
+                    <table id="guest-data-table" style="display: none; width: 100%; margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Fecha de Nacimiento</th>
+                                <th>Teléfono</th>
+                                <th>Contacto de Emergencia</th>
+                                <th>Teléfono de Emergencia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos del huésped se insertarán aquí -->
+                        </tbody>
+                    </table>
+                    <!-- Formulario para actualizar los datos del huésped -->
+                    <form id="update-guest-form" class="grid-form" style="display: none; margin-top: 20px;">
+                        <input type="hidden" id="update-id" name="id">
+                        <div class="form-group">
+                            <label for="update-name">Nombre:</label>
+                            <input type="text" id="update-name" name="nombre" placeholder="Nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-surname">Apellido:</label>
+                            <input type="text" id="update-surname" name="apellido" placeholder="Apellido">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-birthdate">Fecha de Nacimiento:</label>
+                            <input type="date" id="update-birthdate" name="fechaNacimiento">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-phone">Teléfono:</label>
+                            <input type="tel" id="update-phone" name="telefono" placeholder="Teléfono">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-emergency-contact-name">En caso de emergencia contactar a:</label>
+                            <input type="text" id="update-emergency-contact-name" name="contactoEmergencia" placeholder="Nombre del contacto">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-emergency-contact-phone">Teléfono de contacto:</label>
+                            <input type="tel" id="update-emergency-contact-phone" name="telefonoEmergencia" placeholder="Teléfono del contacto">
+                        </div>
+                        <button type="submit" class="btn">Actualizar Huesped</button>
+                        <p id="update-message" style="color: green;"></p> <!-- Párrafo para mostrar el mensaje -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Alternar entre modo oscuro y claro
+        document.querySelector('.mode-switch').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        });
+
+        // Alternar visibilidad de la barra de navegación
+        document.getElementById('navbar-toggle').addEventListener('click', function() {
+            var sidebar = document.getElementById('app-sidebar');
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Alternar entre formularios de nuevo y viejo huésped
+        document.getElementById('new-guest-btn').addEventListener('click', function() {
+            document.getElementById('new-guest-form').classList.add('active');
+            document.getElementById('old-guest-form').classList.remove('active');
+            document.getElementById('new-guest-btn').classList.add('active');
+            document.getElementById('old-guest-btn').classList.remove('active');
+        });
+
+        document.getElementById('old-guest-btn').addEventListener('click', function() {
+            document.getElementById('old-guest-form').classList.add('active');
+            document.getElementById('new-guest-form').classList.remove('active');
+            document.getElementById('old-guest-btn').classList.add('active');
+            document.getElementById('new-guest-btn').classList.remove('active');
+        });
+
+        // Enviar datos del nuevo huésped al servidor
+        document.querySelector('#new-guest-form form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const huesped = {
+                id: document.getElementById('id-new').value,
+                tipoDocumento: document.getElementById('document-type-new').value,
+                nombre: document.getElementById('name').value,
+                apellido: document.getElementById('surname').value,
+                fechaNacimiento: document.getElementById('birthdate').value,
+                telefono: document.getElementById('phone').value,
+                contactoEmergencia: document.getElementById('emergency-contact-name').value,
+                telefonoEmergencia: document.getElementById('emergency-contact-phone').value
+            };
+
+            fetch('/api/huespedes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(huesped)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Huésped agregado:', data);
+                const messageElement = document.getElementById('message');
+                messageElement.style.color = 'green';
+                messageElement.textContent = 'Huésped agregado exitosamente';
+                document.querySelector('#new-guest-form form').reset(); // Restablecer el formulario
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageElement = document.getElementById('message');
+                messageElement.style.color = 'red';
+                messageElement.textContent = 'Error al agregar el huésped';
+            });
+        });
+
+        // Buscar huésped existente
+        document.querySelector('#old-guest-form form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('id').value;
+
+            fetch(`/api/huespedes/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('guest-data-table');
+                const tbody = table.querySelector('tbody');
+                tbody.innerHTML = ''; // Limpiar tabla
+
+                if (data.length > 0) {
+                    data.forEach(huesped => {
+                        const row = document.createElement('tr');
+                        const formattedDate = new Date(huesped.fechaNacimiento).toISOString().split('T')[0]; // Formatear la fecha
+
+                        row.innerHTML = `
+                            <td>${huesped.nombre}</td>
+                            <td>${huesped.apellido}</td>
+                            <td>${formattedDate}</td>
+                            <td>${huesped.telefono}</td>
+                            <td>${huesped.contactoEmergencia}</td>
+                            <td>${huesped.telefonoEmergencia}</td>
+                        `;
+                        tbody.appendChild(row);
+
+                        // Llenar el formulario de actualización con los datos del huésped
+                        document.getElementById('update-id').value = huesped.id;
+                        document.getElementById('update-name').value = huesped.nombre;
+                        document.getElementById('update-surname').value = huesped.apellido;
+                        document.getElementById('update-birthdate').value = formattedDate;
+                        document.getElementById('update-phone').value = huesped.telefono;
+                        document.getElementById('update-emergency-contact-name').value = huesped.contactoEmergencia;
+                        document.getElementById('update-emergency-contact-phone').value = huesped.telefonoEmergencia;
+                    });
+                    table.style.display = 'table';
+                    document.getElementById('update-guest-form').style.display = 'block';
+                } else {
+                    table.style.display = 'none';
+                    document.getElementById('update-guest-form').style.display = 'none';
+                    alert('No se encontró ningún huésped con ese ID.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Actualizar datos del huésped
+        document.getElementById('update-guest-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('update-id').value;
+            const updatedHuesped = {
+                nombre: document.getElementById('update-name').value,
+                apellido: document.getElementById('update-surname').value,
+                telefono: document.getElementById('update-phone').value,
+                contactoEmergencia: document.getElementById('update-emergency-contact-name').value,
+                telefonoEmergencia: document.getElementById('update-emergency-contact-phone').value
+            };
+
+            const fechaNacimiento = document.getElementById('update-birthdate').value;
+            if (fechaNacimiento) {
+                updatedHuesped.fechaNacimiento = fechaNacimiento;
+            }
+
+            console.log('Enviando solicitud de actualización para ID:', id);
+            console.log('Datos del huésped a actualizar:', updatedHuesped);
+
+            fetch(`/api/huespedes/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedHuesped)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Error al actualizar el huésped');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Huésped actualizado:', data);
+                const updateMessageElement = document.getElementById('update-message');
+                updateMessageElement.style.color = 'green';
+                updateMessageElement.textContent = 'Huésped actualizado exitosamente';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const updateMessageElement = document.getElementById('update-message');
+                updateMessageElement.style.color = 'red';
+                updateMessageElement.textContent = `Error al actualizar el huésped: ${error.message}`;
+            });
+        });
+    </script>
+</body>
+</html>
