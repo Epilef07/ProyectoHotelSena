@@ -516,12 +516,391 @@ app.get('/api/aprendices', (req, res) => {
     });
 });
 
+// Ruta para agregar productos del minibar
+app.post('/api/productos_minibar', (req, res) => {
+    const { nombre, referencia, precio, imagen, cantidad } = req.body;
+
+    // Lista de valores permitidos para referencia
+    const referenciasPermitidas = ['bebidas-energeticas', 'galletas', 'golosinas', 'snaks', 'gaseosas', 'paqueteria'];
+
+    // Validar los datos recibidos
+    if (!nombre || !referencia || !precio || !cantidad) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Todos los campos son obligatorios" 
+        });
+    }
+
+    if (!referenciasPermitidas.includes(referencia)) {
+        return res.status(400).json({ 
+            success: false, 
+            message: `La referencia '${referencia}' no es válida. Valores permitidos: ${referenciasPermitidas.join(', ')}` 
+        });
+    }
+
+    const query = `
+        INSERT INTO producto_minibar (nombre, referencia, precio, imagen, cantidad) 
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    connection.query(query, [nombre, referencia, precio, imagen, cantidad], (err, results) => {
+        if (err) {
+            console.error("Error al guardar producto del minibar:", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Error al guardar producto en la base de datos.",
+                error: err.message 
+            });
+        }
+
+        res.json({ 
+            success: true, 
+            message: "Producto guardado correctamente", 
+            id: results.insertId 
+        });
+    });
+});
+
+// Ruta para obtener productos del minibar con asignaciones
+app.get('/api/productos_minibar_con_asignaciones', (req, res) => {
+    const query = `
+        SELECT 
+            pm.id, 
+            pm.nombre, 
+            pm.referencia, 
+            pm.precio, 
+            pm.imagen, 
+            pm.cantidad, 
+            IFNULL(SUM(ap.cantidad), 0) AS totalAsignado,
+            (pm.cantidad - IFNULL(SUM(ap.cantidad), 0)) AS disponible,
+            GROUP_CONCAT(CONCAT(ap.numeroHabitacion, ':', ap.cantidad) SEPARATOR ', ') AS asignaciones
+        FROM producto_minibar pm
+        LEFT JOIN asignacion_producto ap ON pm.id = ap.productoId
+        GROUP BY pm.id
+    `;
+
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error("Error al obtener productos del minibar con asignaciones:", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Error al obtener productos con asignaciones",
+                error: err.message 
+            });
+        }
+
+        // Ajustar valores nulos para asignaciones
+        results.forEach(product => {
+            product.asignaciones = product.asignaciones || 'Ninguna';
+        });
+
+        res.json({
+            success: true, 
+            products: results
+        });
+    });
+});
+
+// Ruta para buscar productos del minibar con filtros y asignaciones
+app.get('/api/productos_minibar', (req, res) => {
+    const { referencia, nombre } = req.query;
+
+    let query = `
+        SELECT 
+            pm.id, 
+            pm.nombre, 
+            pm.referencia, 
+            pm.precio, 
+            pm.imagen, 
+            pm.cantidad, 
+            COALESCE(SUM(ap.cantidad), 0) AS totalAsignado,
+            (pm.cantidad - COALESCE(SUM(ap.cantidad), 0)) AS disponible,
+            IFNULL(GROUP_CONCAT(CONCAT(ap.numeroHabitacion, ':', ap.cantidad) SEPARATOR ', '), 'Ninguna') AS asignaciones
+        FROM producto_minibar pm
+        LEFT JOIN asignacion_producto ap ON pm.id = ap.productoId
+    `;
+    
+    let params = [];
+    let conditions = [];
+
+    // Si referencia no es "todos", aplicamos el filtro
+    if (referencia && referencia.toLowerCase() !== 'todos') {
+        conditions.push(`LOWER(pm.referencia) = ?`);
+        params.push(referencia.toLowerCase());
+    }
+
+    // Filtrar por nombre si se proporciona
+    if (nombre) {
+        conditions.push(`LOWER(pm.nombre) LIKE ?`);
+        params.push(`%${nombre.toLowerCase()}%`);
+    }
+
+    // Si hay condiciones, agregarlas a la consulta
+    if (conditions.length > 0) {
+        query += ` WHERE ` + conditions.join(' AND ');
+    }
+
+    query += ` GROUP BY pm.id, pm.nombre, pm.referencia, pm.precio, pm.imagen, pm.cantidad`;
+
+    connection.query(query, params, (err, results) => {
+        if (err) {
+            console.error("Error al buscar productos del minibar:", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Error al buscar productos",
+                error: err.message 
+            });
+        }
+
+        // Ajustar los valores nulos de asignaciones y calcular correctamente los disponibles
+        results.forEach(product => {
+            product.asignaciones = product.asignaciones || 'Ninguna';
+            product.disponible = Math.max(0, product.disponible); // Asegurar que no sea negativo
+        });
+
+        res.json({
+            success: true, 
+            products: results
+        });
+    });
+});
+
+// Ruta para obtener habitaciones
+app.get('/api/habitaciones', (req, res) => {
+    const query = 'SELECT numeroHabitacion FROM habitacion WHERE ocupada = FALSE';
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener habitaciones:', err);
+            return res.status(500).json({ success: false, message: 'Error al obtener habitaciones' });
+        }
+        res.json({ success: true, habitaciones: results });
+    });
+});
+
+// Ruta para asignar productos a habitaciones
+app.post('/api/asignar_producto', (req, res) => {
+    const { productoId, habitacion, cantidad } = req.body;
+
+    // Convertir la cantidad a entero para evitar errores de comparación
+    const cantidadSolicitada = parseInt(cantidad, 10);
+
+    // Verificar la cantidad total disponible en el minibar
+    const queryProducto = 'SELECT cantidad FROM producto_minibar WHERE id = ?';
+    connection.query(queryProducto, [productoId], (err, results) => {
+        if (err) {
+            console.error('Error al obtener la cantidad del producto:', err);
+            return res.status(500).json({ success: false, message: 'Error al obtener la cantidad del producto', error: err.message });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+        }
+
+        const cantidadDisponible = results[0].cantidad;
+
+        // Obtener la cantidad ya asignada del producto en todas las habitaciones
+        const queryAsignacion = `
+            SELECT IFNULL(SUM(cantidad), 0) AS cantidadAsignada 
+            FROM asignacion_producto 
+            WHERE productoId = ?
+        `;
+        connection.query(queryAsignacion, [productoId], (err, results) => {
+            if (err) {
+                console.error('Error al obtener la cantidad asignada:', err);
+                return res.status(500).json({ success: false, message: 'Error al obtener la cantidad asignada', error: err.message });
+            }
+
+            const cantidadAsignada = results[0].cantidadAsignada || 0;
+            const cantidadRestante = cantidadDisponible - cantidadAsignada;
+
+            console.log(`Cantidad disponible: ${cantidadDisponible}`);
+            console.log(`Cantidad ya asignada: ${cantidadAsignada}`);
+            console.log(`Cantidad restante: ${cantidadRestante}`);
+            console.log(`Cantidad solicitada: ${cantidadSolicitada}`);
+
+            if (cantidadSolicitada > cantidadRestante) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: `No puedes asignar más productos de los que hay disponibles. Cantidad restante: ${cantidadRestante}`
+                });
+            }
+
+            // Insertar o actualizar la asignación en la tabla asignacion_producto
+            const queryInsert = `
+                INSERT INTO asignacion_producto (productoId, numeroHabitacion, cantidad) 
+                VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE cantidad = cantidad + VALUES(cantidad)
+            `;
+
+            connection.query(queryInsert, [productoId, habitacion, cantidadSolicitada], (err, results) => {
+                if (err) {
+                    console.error('Error al asignar producto:', err);
+                    return res.status(500).json({ success: false, message: 'Error al asignar producto', error: err.message });
+                }
+                res.json({ success: true, message: 'Producto asignado correctamente' });
+            });
+        });
+    });
+});
+
+// Ruta para desasignar productos de habitaciones
+app.post('/api/desasignar_producto', (req, res) => {
+    const { productoId, habitacion, cantidad } = req.body;
+
+    // Convertir la cantidad a entero para evitar errores de comparación
+    const cantidadDesasignada = parseInt(cantidad, 10);
+
+    if (!productoId || !habitacion || isNaN(cantidadDesasignada) || cantidadDesasignada <= 0) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Datos inválidos. Asegúrate de proporcionar productoId, habitacion y una cantidad válida.' 
+        });
+    }
+
+    // Verificar si existe una asignación para el producto y la habitación
+    const queryAsignacion = `
+        SELECT cantidad 
+        FROM asignacion_producto 
+        WHERE productoId = ? AND numeroHabitacion = ?
+    `;
+
+    connection.query(queryAsignacion, [productoId, habitacion], (err, results) => {
+        if (err) {
+            console.error('Error al verificar la asignación:', err);
+            return res.status(500).json({ success: false, message: 'Error al verificar la asignación', error: err.message });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'No se encontró una asignación para este producto y habitación' });
+        }
+
+        const cantidadAsignada = results[0].cantidad;
+
+        if (cantidadDesasignada > cantidadAsignada) {
+            return res.status(400).json({ 
+                success: false, 
+                message: `No puedes desasignar más productos de los que están asignados. Cantidad asignada: ${cantidadAsignada}` 
+            });
+        }
+
+        // Iniciar una transacción para asegurar consistencia
+        connection.beginTransaction(err => {
+            if (err) {
+                console.error('Error al iniciar la transacción:', err);
+                return res.status(500).json({ success: false, message: 'Error al iniciar la transacción', error: err.message });
+            }
+
+            // Restar la cantidad desasignada de la asignación existente
+            const queryUpdateAsignacion = `
+                UPDATE asignacion_producto 
+                SET cantidad = cantidad - ? 
+                WHERE productoId = ? AND numeroHabitacion = ?
+            `;
+
+            connection.query(queryUpdateAsignacion, [cantidadDesasignada, productoId, habitacion], (err) => {
+                if (err) {
+                    console.error('Error al actualizar la asignación:', err);
+                    return connection.rollback(() => {
+                        res.status(500).json({ success: false, message: 'Error al actualizar la asignación', error: err.message });
+                    });
+                }
+
+                // Eliminar la asignación si la cantidad llega a 0
+                const queryDeleteAsignacion = `
+                    DELETE FROM asignacion_producto 
+                    WHERE productoId = ? AND numeroHabitacion = ? AND cantidad = 0
+                `;
+
+                connection.query(queryDeleteAsignacion, [productoId, habitacion], (err) => {
+                    if (err) {
+                        console.error('Error al eliminar la asignación:', err);
+                        return connection.rollback(() => {
+                            res.status(500).json({ success: false, message: 'Error al eliminar la asignación', error: err.message });
+                        });
+                    }
+
+                    // Sumar la cantidad desasignada al disponible en el minibar
+                    const queryUpdateProducto = `
+                        UPDATE producto_minibar 
+                        SET cantidad = cantidad + ? 
+                        WHERE id = ?
+                    `;
+
+                    connection.query(queryUpdateProducto, [cantidadDesasignada, productoId], (err) => {
+                        if (err) {
+                            console.error('Error al actualizar el producto:', err);
+                            return connection.rollback(() => {
+                                res.status(500).json({ success: false, message: 'Error al actualizar el producto', error: err.message });
+                            });
+                        }
+
+                        // Confirmar la transacción
+                        connection.commit(err => {
+                            if (err) {
+                                console.error('Error al confirmar la transacción:', err);
+                                return connection.rollback(() => {
+                                    res.status(500).json({ success: false, message: 'Error al confirmar la transacción', error: err.message });
+                                });
+                            }
+
+                            console.log(`Producto desasignado correctamente: Producto ID ${productoId}, Habitación ${habitacion}, Cantidad ${cantidadDesasignada}`);
+                            res.json({ success: true, message: 'Producto desasignado correctamente' });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+// Ruta para obtener productos asignados por habitación
+app.get('/api/productos_por_habitacion', (req, res) => {
+    const query = `
+        SELECT h.numeroHabitacion, pm.nombre, ap.cantidad
+        FROM habitacion h
+        LEFT JOIN asignacion_producto ap ON h.numeroHabitacion = ap.numeroHabitacion
+        LEFT JOIN producto_minibar pm ON ap.productoId = pm.id
+        ORDER BY h.numeroHabitacion, pm.nombre
+    `;
+
+    console.log("Ejecutando consulta para obtener productos por habitación...");
+
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error("Error al ejecutar la consulta SQL:", err);
+            return res.status(500).json({
+                success: false,
+                message: "Error al obtener productos por habitación",
+                error: err.message
+            });
+        }
+
+        console.log("Resultados obtenidos de la consulta:", results);
+
+        const rooms = results.reduce((acc, row) => {
+            let room = acc.find(r => r.numeroHabitacion === row.numeroHabitacion);
+            if (!room) {
+                room = { numeroHabitacion: row.numeroHabitacion, productos: [] };
+                acc.push(room);
+            }
+            if (row.nombre) {
+                room.productos.push({ nombre: row.nombre, cantidad: row.cantidad });
+            }
+            return acc;
+        }, []);
+
+        console.log("Datos procesados para las habitaciones:", rooms);
+
+        res.json({
+            success: true,
+            rooms: rooms
+        });
+    });
+});
+
 /////Fin de crud
 // Ejecutar cada 24 horas para actualizar ocupaciones
 setInterval(liberarHabitaciones, 24 * 60 * 60 * 1000); 
-
-
-
 
 // Iniciar el servidor
 app.listen(port, () => {

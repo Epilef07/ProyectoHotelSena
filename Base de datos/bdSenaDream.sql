@@ -112,9 +112,19 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS producto_minibar (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
-    referencia ENUM('bebidas energeticas', 'galletas', 'golosinas', 'snaks', 'gaseosas', 'paqueteria') NOT NULL,
+    referencia ENUM('bebidas-energeticas', 'galletas', 'golosinas', 'snaks', 'gaseosas', 'paqueteria') NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
-    imagen VARCHAR(512) NOT NULL,
+    imagen VARCHAR(512) NULL,
     cantidad INT NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS asignacion_producto (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    productoId BIGINT NOT NULL,
+    numeroHabitacion SMALLINT NOT NULL,
+    cantidad INT NOT NULL,
+    fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY (productoId, numeroHabitacion),
+    FOREIGN KEY (productoId) REFERENCES producto_minibar(id),
+    FOREIGN KEY (numeroHabitacion) REFERENCES habitacion(numeroHabitacion)
