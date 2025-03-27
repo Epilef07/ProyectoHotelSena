@@ -24,26 +24,19 @@
                 <div class="center-wrap">
                   <div class="section text-center">
                     <h4 class="mb-4 pb-3">Inicio Sesion</h4>
-                    <form id="loginForm" action="/api/login" method="POST">
+                    <form id="loginForm">
                       <div class="form-group">
-                        <input type="text" name="nombreUsuario" class="form-style" placeholder="Nombre de Usuario" required>
+                        <input type="text" id="nombreUsuario" name="nombreUsuario" class="form-style" placeholder="Nombre de Usuario" required>
                         <i class="input-icon uil uil-user"></i>
                       </div>  
                       <div class="form-group mt-2">
-                        <input type="password" name="password" class="form-style" placeholder="Contraseña" required>
+                        <input type="password" id="password" name="password" class="form-style" placeholder="Contraseña" required>
                         <i class="input-icon uil uil-lock-alt"></i>
                       </div>
-                      <button class="btn mt-2" type="submit" name="send2">Acceso</button>
+                      <button class="btn mt-2" type="button" id="loginButton">Acceso</button>
                     </form>
                     <div id="loginMensaje">
                       <!-- Mostrar mensaje de error si está presente en la URL -->
-                      <script>
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const errorMessage = urlParams.get('error');
-                        if (errorMessage) {
-                          document.getElementById('loginMensaje').innerHTML = '<p style="color: red;">' + errorMessage + '</p>';
-                        }
-                      </script>
                     </div>
                     <p class="mb-0 mt-4 text-center"><a href="/HTML/recuperarContrasena.html" class="link">Olvidaste tu contraseña?</a></p>
                   </div>
@@ -102,9 +95,45 @@
   <script src="/src/registro.js"></script> <!-- Asegúrate de que la ruta sea correcta -->
   <script>
     // Mostrar mensaje de error si está presente en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMessage = urlParams.get('error');
     if (errorMessage) {
       document.getElementById('loginMensaje').innerHTML = '<p style="color: red;">' + errorMessage + '</p>';
     }
+
+    document.getElementById('loginButton').addEventListener('click', function () {
+      const nombreUsuario = document.getElementById('nombreUsuario').value;
+      const password = document.getElementById('password').value;
+
+      fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombreUsuario, password })
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => {
+            throw new Error(err.message || 'Error al iniciar sesión');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Guardar el nombre de usuario en localStorage
+          localStorage.setItem('nombreUsuario', data.nombreUsuario);
+
+          // Redirigir a la URL proporcionada
+          window.location.href = data.redirect;
+        } else {
+          document.getElementById('loginMensaje').innerHTML = `<p style="color: red;">${data.message}</p>`;
+        }
+      })
+      .catch(error => {
+        console.error('Error al iniciar sesión:', error);
+        document.getElementById('loginMensaje').innerHTML = '<p style="color: red;">No se pudo iniciar sesión. Intenta nuevamente.</p>';
+      });
+    });
   </script>
 </body>
 </html>

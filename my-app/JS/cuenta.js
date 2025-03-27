@@ -148,3 +148,111 @@ function imprimirAbono() {
         alert('Debes ingresar un abono para poder imprimir.');
     }
 }
+
+function descargarAbono(numeroHabitacion, idHuesped, fechaIngreso, fechaSalida, abono, diasHospedado, cantidadAcompanantes, documentosAcompanantes) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Configurar el estilo del documento
+    doc.setFont('helvetica');
+    doc.setFontSize(20);
+    doc.setTextColor(40);
+
+    // Agregar título
+    doc.text('SENA DREAM - Comprobante de Abono', doc.internal.pageSize.width / 2, 20, { align: 'center' });
+
+    // Agregar línea decorativa
+    doc.setLineWidth(0.5);
+    doc.line(20, 25, doc.internal.pageSize.width - 20, 25);
+
+    // Configurar fuente para el contenido
+    doc.setFontSize(12);
+
+    // Agregar información de la reserva
+    const contenido = [
+        `Número de Habitación: ${numeroHabitacion}`,
+        `ID Huésped: ${idHuesped}`,
+        `Fecha de Ingreso: ${fechaIngreso}`,
+        `Fecha de Salida: ${fechaSalida}`,
+        `Abono: ${abono}`,
+        `Días Hospedado: ${diasHospedado}`,
+        `Cantidad de Acompañantes: ${cantidadAcompanantes}`,
+        `Documentos de Acompañantes: ${documentosAcompanantes}`
+    ];
+
+    // Agregar contenido con espaciado
+    let yPos = 40;
+    contenido.forEach(linea => {
+        doc.text(linea, 20, yPos);
+        yPos += 10;
+    });
+
+    // Agregar línea para firma
+    yPos += 20;
+    doc.text('Firma: _______________________', 20, yPos);
+
+    // Agregar nota legal
+    yPos += 20;
+    doc.setFontSize(10);
+    doc.text('Este documento sirve como comprobante oficial de abono.', 20, yPos);
+
+    // Agregar pie de página con fecha y hora
+    doc.setFontSize(8);
+    const fechaImpresion = new Date().toLocaleString('es-ES');
+    doc.text(`Fecha de impresión: ${fechaImpresion}`, 20, doc.internal.pageSize.height - 10);
+
+    // Descargar el PDF
+    doc.save(`comprobante_abono_${numeroHabitacion}_${idHuesped}.pdf`);
+}
+
+function descargarFactura(numeroHabitacion, idHuesped, fechaIngreso, fechaSalida) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Configurar el estilo del documento
+    doc.setFont('helvetica');
+    doc.setFontSize(20);
+    doc.setTextColor(40);
+
+    // Agregar título
+    doc.text('SENA DREAM - Factura', doc.internal.pageSize.width / 2, 20, { align: 'center' });
+
+    // Agregar línea decorativa
+    doc.setLineWidth(0.5);
+    doc.line(20, 25, doc.internal.pageSize.width - 20, 25);
+
+    // Configurar fuente para el contenido
+    doc.setFontSize(12);
+
+    // Agregar información de la factura
+    const contenido = [
+        `Número de Habitación: ${numeroHabitacion}`,
+        `ID Huésped: ${idHuesped}`,
+        `Fecha de Ingreso: ${fechaIngreso}`,
+        `Fecha de Salida: ${fechaSalida}`
+    ];
+
+    // Agregar contenido con espaciado
+    let yPos = 40;
+    contenido.forEach(linea => {
+        doc.text(linea, 20, yPos);
+        yPos += 10;
+    });
+
+    // Agregar línea para firma
+    yPos += 20;
+    doc.text('Firma: _______________________', 20, yPos);
+
+    // Agregar nota legal
+    yPos += 20;
+    doc.setFontSize(10);
+    doc.text('Este documento sirve como factura oficial.', 20, yPos);
+
+    // Agregar pie de página con fecha y hora
+    doc.setFontSize(8);
+    const fechaImpresion = new Date().toLocaleString('es-ES');
+    doc.text(`Fecha de impresión: ${fechaImpresion}`, 20, doc.internal.pageSize.height - 10);
+
+    // Descargar el PDF
+    doc.save(`factura_${numeroHabitacion}_${idHuesped}.pdf`);
+}

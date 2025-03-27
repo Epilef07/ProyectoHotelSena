@@ -128,3 +128,4 @@ CREATE TABLE IF NOT EXISTS asignacion_producto (
     UNIQUE KEY (productoId, numeroHabitacion),
     FOREIGN KEY (productoId) REFERENCES producto_minibar(id),
     FOREIGN KEY (numeroHabitacion) REFERENCES habitacion(numeroHabitacion)
+):

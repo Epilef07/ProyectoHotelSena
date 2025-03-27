@@ -10,7 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 </head>
 <body class="light-mode">
-    <!--todo este es el encabezado -->
     <div class="app-container">
         <div class="app-header">
             <div class="app-header-left">
@@ -20,7 +19,7 @@
                     </svg>
                 </button>
                 <a href="https://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank">
-                    <img src="/IMAGENES/iconSena.png" style="height: 50px; border-radius: 20px" url="https://oferta.senasofiaplus.edu.co/sofia-oferta/" alt="icono sena">
+                    <img src="/IMAGENES/iconSena.png" style="height: 50px; border-radius: 20px" alt="icono sena">
                 </a>
                 <p class="app-name">SENA DREAM</p>
             </div>
@@ -35,25 +34,17 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
-                        <span>ADMIN</span>
+                        <span id="nombre-usuario">ADMIN</span>
                         <svg id="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1 0-.708z"/>
                         </svg>
                     </button>
                     <ul class="profile-dropdown" id="profile-dropdown">
-                        <li><a href="/index.html">Cerrar Sesión</a></li>
+                        <li><a href="/index.html" onclick="cerrarSesion()">Cerrar Sesión</a></li>
                     </ul>
-                    <script>
-                        document.getElementById('profile-btn').addEventListener('click', function() {
-                            var dropdown = document.getElementById('profile-dropdown');
-                            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                        });
-                    </script>
                 </div>
             </div>
         </div>
-        <!--Aqui es el iconos de navegar-->
-        <!--Aqui es el icono de la casa-->
         <div class="app-content">
             <div class="app-sidebar" id="app-sidebar">
                 <a href="/HTML/menu.html" class="app-sidebar-link">
@@ -62,13 +53,11 @@
                         <polyline points="9 22 9 12 15 12 15 22" />
                     </svg>
                 </a>
-                <!--Aqui es el icono de la persona-->
                 <a href="/HTML/huesped.html" class="app-sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
                 </a>
-                <!--Aqui es el icono de la habitaciones-->
                 <a href="/HTML/habitaciones.html" class="app-sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed">
                         <path d="M3 7h18v10H3z" />
@@ -79,7 +68,6 @@
                         <path d="M17 7v5" />
                     </svg>
                 </a>
-                <!--Aqui es el icono de la tareas-->
                 <a href="/HTML/tareas.html" class="app-sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -88,10 +76,8 @@
                         <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                 </a>
-                <!--Aqui es el icono de la cuenta-->
                 <a href="" class="app-sidebar-link active">
                     <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-file-text" viewBox="0 0 24 24">
-                        <defs />
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                         <line x1="16" y1="13" x2="8" y2="13" />
@@ -99,102 +85,17 @@
                         <polyline points="10 9 9 9 8 9" />
                     </svg>
                 </a>
-                <!-- aqui es el icono de los aprendices con su horario de entrada y salida -->
                 <a href="/HTML/administrador.html" class="app-sidebar-link">
                     <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-pie-chart" viewBox="0 0 24 24">
-                        <defs />
                         <path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z" />
                     </svg>
                 </a>
             </div>
-            <!--Ya empieza todo dentro de los el menu-->
             <div class="projects-section scrollable">
                 <div class="projects-section-header" style="margin-bottom: 0px;">
                     <p>CUENTA</p>
-                    <button id="descargar-pdf" class="btn">Realizar factura</button>
                 </div>
-                <!-- Formulario de búsqueda de huésped viejo -->
-                <div class="form-group-inline">
-                    <div class="form-group">
-                        <label for="document-type">Tipo de Documento:</label>
-                        <select id="document-type" name="document-type">
-                            <option value="cc">Cédula de Ciudadanía</option>
-                            <option value="ti">Tarjeta de Identidad</option>
-                            <option value="ce">Cédula de Extranjería</option>
-                            <option value="pep">PEP</option>
-                            <option value="ppt">Permiso por Protección Temporal</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="id">Cedula:</label>
-                        <input type="text" id="id" name="id" placeholder="Cedula">
-                    </div>
-                </div>
-                <button type="submit" class="btn" id="buscar-huesped-btn">Buscar Huésped</button>
-                <!-- Formulario para actualizar los datos del huésped -->
-                <form id="update-guest-form" class="grid-form" style="display: none; margin-top: 20px;">
-                    <input type="hidden" id="update-id" name="id">
-                    <div class="form-group">
-                        <label for="update-name">Nombre:</label>
-                        <input type="text" id="update-name" name="nombre" placeholder="Nombre">
-                    </div>
-                    <div class="form-group">
-                        <label for="update-surname">Apellido:</label>
-                        <input type="text" id="update-surname" name="apellido" placeholder="Apellido">
-                    </div>
-                    <div class="form-group">
-                        <label for="update-birthdate">Fecha de Nacimiento:</label>
-                        <input type="date" id="update-birthdate" name="fechaNacimiento">
-                    </div>
-                    <div class="form-group">
-                        <label for="update-phone">Teléfono:</label>
-                        <input type="tel" id="update-phone" name="telefono" placeholder="Teléfono">
-                    </div>
-                    <div class="form-group">
-                        <label for="update-emergency-contact-name">En caso de emergencia contactar a:</label>
-                        <input type="text" id="update-emergency-contact-name" name="contactoEmergencia" placeholder="Nombre del contacto">
-                    </div>
-                    <div class="form-group">
-                        <label for="update-emergency-contact-phone">Teléfono de contacto:</label>
-                        <input type="tel" id="update-emergency-contact-phone" name="telefonoEmergencia" placeholder="Teléfono del contacto">
-                    </div>
-                    <button type="submit" class="btn">Actualizar Huésped</button>
-                    <p id="update-message" style="color: green;"></p> <!-- Párrafo para mostrar el mensaje -->
-                </form>
-                <div class="form-group">
-                    <label>Tipo de Persona:</label>
-                    <div class="radio-group">
-                        <!-- Eliminados los radio buttons -->
-                    </div>
-                </div>
-                <p id="reserva-message" style="color: red; display: none;">Este usuario no ha hecho reservas.</p>
-                <div class="info-card" id="datos-huesped-card" style="display: none;">
-                    <h3>Datos del Huésped</h3>
-                    <table id="datos-huesped" style="margin: 0 auto; width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Fecha de Nacimiento</th>
-                                <th>Teléfono</th>
-                                <th>Contacto de Emergencia</th>
-                                <th>Teléfono de Emergencia</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="nombre-huesped"></td>
-                                <td id="apellido-huesped"></td>
-                                <td id="fecha-nacimiento-huesped"></td>
-                                <td id="telefono-huesped"></td>
-                                <td id="contacto-emergencia-huesped"></td>
-                                <td id="telefono-emergencia-huesped"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <!-- Eliminado el apartado de "Días Hospedado" -->
-                </div>
-                <div class="info-card" id="reservas-info-cards" style="display: none;">
+                <div class="info-card" id="reservas-info-cards">
                     <h3>Reservas Actuales</h3>
                     <table id="reservas-actuales">
                         <thead>
@@ -205,6 +106,7 @@
                                 <th>Fecha de Salida</th>
                                 <th>Abono</th>
                                 <th>Días Hospedado</th>
+                                <th>Cantidad de Acompañantes</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -218,7 +120,6 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/JS/cuenta.js"></script>
-    <script src="/ProyectoHotel/my-app/JS/cuenta.js"></script>
     <script>
         // Alternar entre modo oscuro y claro
         document.querySelector('.mode-switch').addEventListener('click', function() {
@@ -232,246 +133,10 @@
             sidebar.classList.toggle('hidden');
         });
 
-        // Buscar huésped existente
-        document.getElementById('buscar-huesped-btn').addEventListener('click', function(event) {
-            event.preventDefault();
-            const id = document.getElementById('id').value;
-
-            fetch(`/api/huespedes/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    const huesped = data[0];
-                    const formattedDate = new Date(huesped.fechaNacimiento).toISOString().split('T')[0]; // Formatear la fecha
-
-                    // Mostrar los datos del huésped en el info-card como una tabla
-                    document.getElementById('nombre-huesped').textContent = huesped.nombre;
-                    document.getElementById('apellido-huesped').textContent = huesped.apellido;
-                    document.getElementById('fecha-nacimiento-huesped').textContent = formattedDate;
-                    document.getElementById('telefono-huesped').textContent = huesped.telefono;
-                    document.getElementById('contacto-emergencia-huesped').textContent = huesped.contactoEmergencia;
-                    document.getElementById('telefono-emergencia-huesped').textContent = huesped.telefonoEmergencia;
-
-                    document.getElementById('datos-huesped-card').style.display = 'block';
-                    document.getElementById('update-guest-form').style.display = 'none';
-
-                    // Buscar reservas del huésped
-                    fetch(`/api/reservas/${id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(reservas => {
-                        const tbody = document.querySelector('#reservas-actuales tbody');
-                        tbody.innerHTML = ''; // Limpiar la tabla antes de llenarla
-
-                        if (reservas.length > 0) {
-                            let totalAbono = 0;
-                            let totalDias = 0;
-                            reservas.forEach(reserva => {
-                                const fechaIngreso = new Date(reserva.fechaIngreso).toLocaleDateString('es-ES');
-                                const fechaSalida = new Date(reserva.fechaSalida).toLocaleDateString('es-ES');
-                                const diasHospedado = Math.ceil((new Date(reserva.fechaSalida) - new Date(reserva.fechaIngreso)) / (1000 * 60 * 60 * 24));
-                                // Convertir el abono a número y formatearlo como moneda
-                                const abonoCompleto = parseFloat(reserva.abono).toLocaleString('es-CO', {
-                                    style: 'currency',
-                                    currency: 'COP',
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0
-                                });
-                                const tr = document.createElement('tr');
-                                tr.innerHTML = `
-                                    <td>${reserva.numeroHabitacion}</td>
-                                    <td>${reserva.idHuesped}</td>
-                                    <td>${fechaIngreso}</td>
-                                    <td>${fechaSalida}</td>
-                                    <td>${abonoCompleto}</td>  <!-- Mostramos el abono formateado -->
-                                    <td>${diasHospedado}</td>
-                                    <td>
-                                        <button class="btn-verde" onclick='descargarComprobante(${JSON.stringify({
-                                            numeroHabitacion: reserva.numeroHabitacion,
-                                            idHuesped: reserva.idHuesped,
-                                            fechaIngreso: fechaIngreso,
-                                            fechaSalida: fechaSalida,
-                                            abono: abonoCompleto,  // Usamos el abono formateado
-                                            diasHospedado: diasHospedado
-                                        })})'>
-                                            Descargar Comprobante
-                                        </button>
-                                    </td>
-                                `;
-                                tbody.appendChild(tr);
-                                totalAbono += Number(reserva.abono);
-                                totalDias += diasHospedado;
-                            });
-                            document.getElementById('dias-hospedado').textContent = `Total Días Hospedado: ${totalDias}`;
-                            document.getElementById('reservas-info-cards').style.display = 'block';
-                            document.getElementById('reserva-message').style.display = 'none';
-                        } else {
-                            document.getElementById('reserva-message').style.display = 'block';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error al buscar reservas:', error);
-                        document.getElementById('reserva-message').textContent = 'Error al buscar reservas';
-                    });
-                } else {
-                    document.getElementById('update-guest-form').style.display = 'none';
-                    alert('No se encontró ningún huésped con ese ID.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        // Actualizar datos del huésped
-        document.getElementById('update-guest-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const id = document.getElementById('update-id').value;
-            const updatedHuesped = {
-                nombre: document.getElementById('update-name').value,
-                apellido: document.getElementById('update-surname').value,
-                telefono: document.getElementById('update-phone').value,
-                contactoEmergencia: document.getElementById('update-emergency-contact-name').value,
-                telefonoEmergencia: document.getElementById('update-emergency-contact-phone').value
-            };
-
-            const fechaNacimiento = document.getElementById('update-birthdate').value;
-            if (fechaNacimiento) {
-                updatedHuesped.fechaNacimiento = fechaNacimiento;
-            }
-
-            console.log('Enviando solicitud de actualización para ID:', id);
-            console.log('Datos del huésped a actualizar:', updatedHuesped);
-
-            fetch(`/api/huespedes/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedHuesped)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message || 'Error al actualizar el huésped');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Huésped actualizado:', data);
-                const updateMessageElement = document.getElementById('update-message');
-                updateMessageElement.style.color = 'green';
-                updateMessageElement.textContent = 'Huésped actualizado exitosamente';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                const updateMessageElement = document.getElementById('update-message');
-                updateMessageElement.style.color = 'red';
-                updateMessageElement.textContent = `Error al actualizar el huésped: ${error.message}`;
-            });
-        });
-
-        // Generar PDF de la cuenta del huésped
-        document.getElementById('descargar-pdf').addEventListener('click', function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.text('Cuenta del Huésped', 10, 10);
-            doc.text(`Nombre: ${document.getElementById('nombre-huesped').textContent}`, 10, 20);
-            doc.text(`Apellido: ${document.getElementById('apellido-huesped').textContent}`, 10, 30);
-            doc.text(`Fecha de Nacimiento: ${document.getElementById('fecha-nacimiento-huesped').textContent}`, 10, 40);
-            doc.text(`Teléfono: ${document.getElementById('telefono-huesped').textContent}`, 10, 50);
-            doc.text(`Contacto de Emergencia: ${document.getElementById('contacto-emergencia-huesped').textContent}`, 10, 60);
-            doc.text(`Teléfono de Emergencia: ${document.getElementById('telefono-emergencia-huesped').textContent}`, 10, 70);
-            doc.text(`Total Días Hospedado: ${document.getElementById('dias-hospedado').textContent}`, 10, 80);
-
-            doc.save('cuenta_huesped.pdf');
-        });
-
-        function descargarComprobante(reserva) {
-            // Obtener los datos del huésped desde los elementos HTML
-            const nombreHuesped = document.getElementById('nombre-huesped').textContent;
-            const apellidoHuesped = document.getElementById('apellido-huesped').textContent;
-            const telefonoHuesped = document.getElementById('telefono-huesped').textContent;
-
-            // Crear nueva instancia de jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Configurar el estilo del documento
-            doc.setFont('helvetica');
-            doc.setFontSize(20);
-            doc.setTextColor(40);
-
-            // Agregar título
-            doc.text('SENA DREAM - Comprobante de Abono', doc.internal.pageSize.width/2, 20, {align: 'center'});
-
-            // Agregar línea decorativa
-            doc.setLineWidth(0.5);
-            doc.line(20, 25, doc.internal.pageSize.width-20, 25);
-
-            // Configurar fuente para el contenido
-            doc.setFontSize(12);
-            
-            // Agregar información del huésped y reserva
-            const contenido = [
-                `Nombre del Huésped: ${nombreHuesped}`,
-                `Apellido del Huésped: ${apellidoHuesped}`,
-                `Teléfono del Huésped: ${telefonoHuesped}`,
-                `Número de Habitación: ${reserva.numeroHabitacion}`,
-                `ID Huésped: ${reserva.idHuesped}`,
-                `Fecha de Ingreso: ${reserva.fechaIngreso}`,    
-                `Fecha de Salida: ${reserva.fechaSalida}`,
-                `Monto Abonado: ${reserva.abono}`,
-                `Días de Hospedaje: ${reserva.diasHospedado}`
-            ];
-
-            // Agregar contenido con espaciado
-            let yPos = 40;
-            contenido.forEach(linea => {
-                doc.text(linea, 20, yPos);
-                yPos += 10;
-            });
-
-            // Agregar línea para firma
-            yPos += 20;
-            doc.text('Firma: _______________________', 20, yPos);
-
-            // Agregar nota legal
-            yPos += 20;
-            doc.setFontSize(10);
-            doc.text('Este documento sirve como comprobante oficial de abono.', 20, yPos);
-
-            // Agregar pie de página con fecha y hora
-            doc.setFontSize(8);
-            const fechaImpresion = new Date().toLocaleString('es-ES');
-            doc.text(`Fecha de impresión: ${fechaImpresion}`, 20, doc.internal.pageSize.height - 10);
-
-            // Guardar el PDF
-            doc.save(`comprobante_abono_${reserva.idHuesped}_${new Date().getTime()}.pdf`);
-        }
-
+        // Obtener reservas al cargar la página
         function obtenerReservas() {
-            // Mostrar el contenedor de reservas
-            document.getElementById('reservas-info-cards').style.display = 'block';
-            
             fetch('/api/reserva')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al obtener las reservas');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     const tbody = document.querySelector('#reservas-actuales tbody');
                     tbody.innerHTML = ''; // Limpiar la tabla
@@ -482,51 +147,82 @@
                             const fechaIngreso = new Date(reserva.fechaIngreso).toLocaleDateString('es-ES');
                             const fechaSalida = new Date(reserva.fechaSalida).toLocaleDateString('es-ES');
                             const diasHospedado = Math.ceil((new Date(reserva.fechaSalida) - new Date(reserva.fechaIngreso)) / (1000 * 60 * 60 * 24));
-                            
                             const abonoCompleto = parseFloat(reserva.abono).toLocaleString('es-CO', {
                                 style: 'currency',
                                 currency: 'COP',
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 0
                             });
+
+                            // Obtener cantidad de acompañantes y documentos
+                            const cantidadAcompanantes = reserva.cantidadAcompañante || 0; // Usar el nombre correcto del campo
+                            const documentosAcompanantes = reserva.acompanantes ? reserva.acompanantes.split(',') : [];
+
+                            // Crear una lista de documentos de acompañantes
+                            const documentosAcompanantesTexto = documentosAcompanantes.length > 0
+                                ? documentosAcompanantes.join(', ')
+                                : 'Sin acompañantes';
+
                             tr.innerHTML = `
                                 <td>${reserva.numeroHabitacion}</td>
                                 <td>${reserva.idHuesped}</td>
                                 <td>${fechaIngreso}</td>
                                 <td>${fechaSalida}</td>
-                                <td>${abonoCompleto}</td>  <!-- actualizado -->
-                                <td>${diasHospedado} días</td>
+                                <td>${abonoCompleto}</td>
+                                <td>${diasHospedado}</td>
+                                <td>${cantidadAcompanantes}</td>
                                 <td>
-                                    <button class="btn-verde" onclick='descargarComprobante(${JSON.stringify({
-                                        numeroHabitacion: reserva.numeroHabitacion,
-                                        idHuesped: reserva.idHuesped,
-                                        fechaIngreso: fechaIngreso,
-                                        fechaSalida: fechaSalida,
-                                        abono: abonoCompleto,
-                                        diasHospedado: diasHospedado
-                                    })})'>
-                                        Descargar Comprobante
-                                    </button>
+                                    <div class="acciones-botones">
+                                        <button class="btn-verde" onclick="descargarAbono(
+                                            '${reserva.numeroHabitacion}',
+                                            '${reserva.idHuesped}',
+                                            '${fechaIngreso}',
+                                            '${fechaSalida}',
+                                            '${abonoCompleto}',
+                                            '${diasHospedado}',
+                                            '${cantidadAcompanantes}',
+                                            '${documentosAcompanantesTexto}'
+                                        )">
+                                            Descargar Abono
+                                        </button>
+                                        <button class="btn-verde" onclick="descargarFactura(
+                                            '${reserva.numeroHabitacion}',
+                                            '${reserva.idHuesped}',
+                                            '${fechaIngreso}',
+                                            '${fechaSalida}'
+                                        )">
+                                            Descargar Factura
+                                        </button>
+                                    </div>
                                 </td>
                             `;
                             tbody.appendChild(tr);
                         });
                     } else {
                         const tr = document.createElement('tr');
-                        tr.innerHTML = '<td colspan="6" style="text-align: center;">No hay reservas disponibles</td>';
+                        tr.innerHTML = '<td colspan="8" style="text-align: center;">No hay reservas disponibles</td>';
                         tbody.appendChild(tr);
                     }
                 })
                 .catch(error => {
                     console.error('Error al obtener las reservas:', error);
-                    const tbody = document.querySelector('#reservas-actuales tbody');
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">Error al cargar las reservas: ${error.message}</td></tr>`;
                 });
         }
 
-        // Llamar a la función cuando se carga la página y cuando se busca un huésped
         document.addEventListener('DOMContentLoaded', obtenerReservas);
-        document.getElementById('buscar-huesped-btn').addEventListener('click', obtenerReservas);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nombreUsuario = localStorage.getItem('nombreUsuario');
+            if (nombreUsuario) {
+                document.getElementById('nombre-usuario').textContent = nombreUsuario;
+            }
+        });
+    </script>
+    <script>
+        function cerrarSesion() {
+            localStorage.removeItem('nombreUsuario');
+        }
     </script>
 </body>
 </html>

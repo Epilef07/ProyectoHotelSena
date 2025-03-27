@@ -69,10 +69,19 @@ app.post('/api/login', (req, res) => {
         if (results.length > 0) {
             const user = results[0];
 
+            // Si el usuario es administrador
             if (user.rol === 'admin') {
-                return res.redirect('/HTML/menu.html');
-            } else if (user.rol === 'user') {
-
+                // Devolver el nombre de usuario junto con la redirección
+                return res.json({ 
+                    success: true, 
+                    message: 'Inicio de sesión exitoso', 
+                    rol: 'admin', 
+                    nombreUsuario: user.nombreUsuario, 
+                    redirect: '/HTML/menu.html' 
+                });
+            } 
+            // Si el usuario es aprendiz
+            else if (user.rol === 'user') {
                 const updateQuery = `
                     UPDATE aprendiz 
                     SET fechaHoraIngreso = NOW() 
@@ -84,14 +93,24 @@ app.post('/api/login', (req, res) => {
                         return res.status(500).json({ message: 'Error al actualizar la hora de ingreso' });
                     }
 
-
-                    return res.redirect('/HTML/menuUser.html');
+                    // Devolver el nombre de usuario junto con la redirección
+                    return res.json({ 
+                        success: true, 
+                        message: 'Inicio de sesión exitoso', 
+                        rol: 'user', 
+                        nombreUsuario: user.nombreUsuario, 
+                        redirect: '/HTML/menuUser.html' 
+                    });
                 });
-            } else {
-                return res.redirect('/?error=Rol desconocido');
+            } 
+            // Si el rol es desconocido
+            else {
+                return res.status(400).json({ success: false, message: 'Rol desconocido' });
             }
-        } else {
-            return res.redirect('/?error=Nombre de usuario o contraseña incorrectos');
+        } 
+        // Si no se encuentran resultados
+        else {
+            return res.status(401).json({ success: false, message: 'Nombre de usuario o contraseña incorrectos' });
         }
     });
 });
@@ -495,6 +514,76 @@ app.post('/api/reserva/:codigoReserva/acompanantes', (req, res) => {
     });
 });
 
+// Ruta para eliminar una reserva
+app.delete('/api/reserva/:codigoReserva', (req, res) => {
+    const { codigoReserva } = req.params;
+
+    // Consulta para eliminar la reserva
+    const queryEliminarReserva = `DELETE FROM hoteleria.reserva WHERE codigoReserva = ?`;
+
+    // Consulta para eliminar los acompañantes relacionados con la reserva
+    const queryEliminarAcompanantes = `DELETE FROM hoteleria.huesped_reserva WHERE codigoReserva = ?`;
+
+    // Consulta para actualizar el estado de la habitación
+    const queryActualizarHabitacion = `UPDATE hoteleria.habitacion SET ocupada = 0 WHERE numeroHabitacion = (
+        SELECT numeroHabitacion FROM hoteleria.reserva WHERE codigoReserva = ?
+    )`;
+
+    connection.beginTransaction(err => {
+        if (err) {
+            console.error('Error al iniciar la transacción:', err);
+            return res.status(500).json({ message: 'Error al iniciar la transacción' });
+        }
+
+        // Eliminar los acompañantes relacionados con la reserva
+        connection.query(queryEliminarAcompanantes, [codigoReserva], (err) => {
+            if (err) {
+                console.error('Error al eliminar acompañantes:', err);
+                return connection.rollback(() => {
+                    res.status(500).json({ message: 'Error al eliminar los acompañantes' });
+                });
+            }
+
+            // Actualizar el estado de la habitación
+            connection.query(queryActualizarHabitacion, [codigoReserva], (err) => {
+                if (err) {
+                    console.error('Error al actualizar el estado de la habitación:', err);
+                    return connection.rollback(() => {
+                        res.status(500).json({ message: 'Error al actualizar el estado de la habitación' });
+                    });
+                }
+
+                // Eliminar la reserva
+                connection.query(queryEliminarReserva, [codigoReserva], (err, results) => {
+                    if (err) {
+                        console.error('Error al eliminar la reserva:', err);
+                        return connection.rollback(() => {
+                            res.status(500).json({ message: 'Error al eliminar la reserva' });
+                        });
+                    }
+
+                    if (results.affectedRows === 0) {
+                        return connection.rollback(() => {
+                            res.status(404).json({ message: 'Reserva no encontrada' });
+                        });
+                    }
+
+                    // Confirmar la transacción
+                    connection.commit(err => {
+                        if (err) {
+                            console.error('Error al confirmar la transacción:', err);
+                            return connection.rollback(() => {
+                                res.status(500).json({ message: 'Error al confirmar la transacción' });
+                            });
+                        }
+
+                        res.json({ message: 'Reserva eliminada correctamente' });
+                    });
+                });
+            });
+        });
+    });
+});
 
 // Ruta para obtener los datos de los aprendices
 app.get('/api/aprendices', (req, res) => {

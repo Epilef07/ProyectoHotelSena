@@ -768,21 +768,18 @@ display: none;
 }
 
 .btn-verde {
-    background-color: #4CAF50 !important; /* Verde */
-    color: white !important;
-    border: none !important;
-    padding: 10px 20px !important;
-    text-align: center !important;
-    text-decoration: none !important;
-    display: inline-block !important;
-    font-size: 16px !important;
-    margin: 10px 0 !important;
-    cursor: pointer !important;
-    border-radius: 12px !important;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
 .btn-verde:hover {
-    background-color: #45a049 !important; /* Verde oscuro */
+    background-color: #45a049;
 }
 
 .grid-form {
@@ -853,17 +850,16 @@ footer {
 }
 
 .info-card {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    background-color: var(--projects-section);
-    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
     padding: 20px;
-    width: 100%;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin-top: 20px;
-    justify-items: center; /* Centrar contenido horizontalmente */
+    max-width: 90%; /* Ajusta el ancho máximo para que no ocupe toda la pantalla */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .info-card h3 {
@@ -1265,11 +1261,16 @@ top: 10px;
 }
 
 .info-card {
-    background: #fff;
-    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
     padding: 20px;
-    margin: 20px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 90%; /* Ajusta el ancho máximo para que no ocupe toda la pantalla */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .info-card h3 {
@@ -1303,26 +1304,163 @@ top: 10px;
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 16px;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#reservas-actuales th,
-#reservas-actuales td {
-    padding: 12px;
-    text-align: left;
+#reservas-actuales thead {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+#reservas-actuales th, #reservas-actuales td {
+    padding: 12px 16px;
     border-bottom: 1px solid #ddd;
 }
 
-#reservas-actuales th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-#reservas-actuales tr:hover {
-    background-color: #f5f5f5;
-}
-
-#reservas-actuales tr:nth-child(even) {
+#reservas-actuales tbody tr:hover {
     background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+    .info-card {
+        padding: 10px;
+    }
+
+    #reservas-actuales {
+        font-size: 14px;
+    }
+
+    #reservas-actuales th, #reservas-actuales td {
+        padding: 8px 12px;
+    }
+}
+
+/* Estilos para la tabla de reservas */
+#reservas-actuales {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#reservas-actuales thead {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+#reservas-actuales th, #reservas-actuales td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd;
+}
+
+#reservas-actuales tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+#reservas-actuales tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#reservas-actuales td {
+    color: var(--secondary-color);
+}
+
+/* Botón de acciones dentro de la tabla */
+#reservas-actuales .btn-verde {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+#reservas-actuales .btn-verde:hover {
+    background-color: #45a049;
+}
+
+.btn-azul {
+    background-color: #007BFF; /* Azul */
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-left: 8px; /* Espaciado entre botones */
+}
+
+.btn-azul:hover {
+    background-color: #0056b3; /* Azul oscuro */
+}
+
+/* Ajustar la tabla para pantallas pequeñas */
+@media (max-width: 768px) {
+    #reservas-actuales {
+        font-size: 14px;
+    }
+
+    #reservas-actuales th, #reservas-actuales td {
+        padding: 8px 12px;
+    }
+
+    #reservas-actuales .btn-verde {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+/* Contenedor para alinear los botones */
+.acciones-botones {
+    display: flex;
+    gap: 10px; /* Espaciado entre los botones */
+    justify-content: center; /* Centrar los botones horizontalmente */
+    align-items: center; /* Alinear los botones verticalmente */
+}
+
+/* Botón verde */
+.btn-verde {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-verde:hover {
+    background-color: #45a049;
+}
+
+/* Botón azul */
+.btn-azul {
+    background-color: #007BFF; /* Azul */
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-azul:hover {
+    background-color: #0056b3; /* Azul oscuro */
 }
 
 

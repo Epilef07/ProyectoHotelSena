@@ -35,13 +35,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 24 24">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
-                        <span>ADMIN</span>
+                        <span id="nombre-usuario">ADMIN</span>
                         <svg id="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
                         </svg>
                     </button>
                     <ul class="profile-dropdown" id="profile-dropdown">
-                        <li><a href="/index.html">Cerrar Sesión</a></li>
+                        <li><a href="/index.html" onclick="cerrarSesion()">Cerrar Sesión</a></li>
                     </ul>
                     <script>
                         document.getElementById('profile-btn').addEventListener('click', function() {
@@ -79,7 +79,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                         <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="8" y1="2" x2="8 y2="6" />
                         <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
                 </a>
@@ -486,6 +486,17 @@
             link.download = `comprobante_huesped_${nombreHuesped}_${apellidoHuesped}_${new Date().getTime()}.pdf`;
             link.click();
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const nombreUsuario = localStorage.getItem('nombreUsuario');
+            if (nombreUsuario) {
+                document.getElementById('nombre-usuario').textContent = nombreUsuario;
+            }
+        });
+
+        function cerrarSesion() {
+            localStorage.removeItem('nombreUsuario');
+        }
     </script>
 </body>
 </html>
