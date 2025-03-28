@@ -76,7 +76,6 @@ CREATE TABLE IF NOT EXISTS detalle_reserva (
     codigoReserva BIGINT NOT NULL,
     minibarConsumido BOOLEAN DEFAULT FALSE,
     cantidadConsumida SMALLINT DEFAULT 0,
-    descripcionConsumo TEXT,
     FOREIGN KEY(codigoReserva) REFERENCES reserva(codigoReserva) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS huesped_reserva (
@@ -90,11 +89,9 @@ CREATE TABLE IF NOT EXISTS huesped_reserva (
 
 CREATE TABLE IF NOT EXISTS tareas(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    idAdministrador BIGINT NOT NULL,
-    idAprendiz BIGINT NOT NULL,
+    idUsuario BIGINT NOT NULL,
     descripcion VARCHAR(255),
-    FOREIGN KEY (idAdministrador) REFERENCES administrador(id),
-    FOREIGN KEY (idAprendiz) REFERENCES aprendiz(id)
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
 );
 
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -112,11 +109,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS producto_minibar (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
-    referencia ENUM('bebidas-energeticas', 'galletas', 'golosinas', 'snaks', 'gaseosas', 'paqueteria') NOT NULL,
+    referencia ENUM('bebidas-energeticas', 'galletas', 'golosinas','gaseosas', 'paqueteria') NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
-    imagen VARCHAR(512) NULL,
     cantidad INT NOT NULL,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS asignacion_producto (
@@ -128,4 +123,4 @@ CREATE TABLE IF NOT EXISTS asignacion_producto (
     UNIQUE KEY (productoId, numeroHabitacion),
     FOREIGN KEY (productoId) REFERENCES producto_minibar(id),
     FOREIGN KEY (numeroHabitacion) REFERENCES habitacion(numeroHabitacion)
-):
+);

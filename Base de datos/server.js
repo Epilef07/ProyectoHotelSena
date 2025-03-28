@@ -5,12 +5,20 @@ const connection = require('./dbConnection');
 const { agregarHuesped, buscarHuesped, actualizarHuesped } = require('./crudHuespedes');
 const { agregarTarea, obtenerTareas, actualizarTarea, eliminarTarea } = require('./crudTareas');
 const { agregarReserva, obtenerReservas } = require('./reservaciones'); // Ruta corregida
+const session = require('express-session');
 
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // Asegúrate de que esto esté presente
+
+app.use(session({
+    secret: 'clave-secreta', // Cambia esto por una clave segura
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Usa `true` si estás usando HTTPS
+}));
 
 // Servir archivos estáticos desde las diferentes carpetas
 app.use(express.static(path.join(__dirname, '../my-app/HTML')));
@@ -69,9 +77,11 @@ app.post('/api/login', (req, res) => {
         if (results.length > 0) {
             const user = results[0];
 
-            // Si el usuario es administrador
+            // Guardar el usuario y el rol en la sesión
+            req.session.usuarioId = user.id;
+            req.session.rol = user.rol; // Guardar el rol en la sesión
+
             if (user.rol === 'admin') {
-                // Devolver el nombre de usuario junto con la redirección
                 return res.json({ 
                     success: true, 
                     message: 'Inicio de sesión exitoso', 
@@ -79,9 +89,7 @@ app.post('/api/login', (req, res) => {
                     nombreUsuario: user.nombreUsuario, 
                     redirect: '/HTML/menu.html' 
                 });
-            } 
-            // Si el usuario es aprendiz
-            else if (user.rol === 'user') {
+            } else if (user.rol === 'user') {
                 const updateQuery = `
                     UPDATE aprendiz 
                     SET fechaHoraIngreso = NOW() 
@@ -93,7 +101,6 @@ app.post('/api/login', (req, res) => {
                         return res.status(500).json({ message: 'Error al actualizar la hora de ingreso' });
                     }
 
-                    // Devolver el nombre de usuario junto con la redirección
                     return res.json({ 
                         success: true, 
                         message: 'Inicio de sesión exitoso', 
@@ -102,14 +109,10 @@ app.post('/api/login', (req, res) => {
                         redirect: '/HTML/menuUser.html' 
                     });
                 });
-            } 
-            // Si el rol es desconocido
-            else {
+            } else {
                 return res.status(400).json({ success: false, message: 'Rol desconocido' });
             }
-        } 
-        // Si no se encuentran resultados
-        else {
+        } else {
             return res.status(401).json({ success: false, message: 'Nombre de usuario o contraseña incorrectos' });
         }
     });
@@ -171,22 +174,59 @@ app.put('/api/huespedes/:id', (req, res) => {
 
 // Ruta para agregar una tarea
 app.post('/api/tareas', (req, res) => {
-    const nuevaTarea = { descripcion: req.body.descripcion };
-    agregarTarea(nuevaTarea, (err, results) => {
+    const { descripcion } = req.body;
+
+    if (!req.session.usuarioId) {
+        return res.status(401).json({ success: false, message: 'Usuario no autenticado' });
+    }
+
+    const usuarioId = req.session.usuarioId;
+
+    const query = 'INSERT INTO tareas (descripcion, idUsuario) VALUES (?, ?)';
+    connection.query(query, [descripcion, usuarioId], (err, results) => {
         if (err) {
             console.error('Error al agregar la tarea:', err);
-            return res.status(500).json({ success: false, message: 'Error al agregar la tarea' });
+            return res.status(500).json({ message: 'Error al agregar la tarea' });
         }
-        res.json({ success: true, message: 'Tarea agregada exitosamente', results });
+        res.json({ success: true, results });
     });
 });
 
 // Ruta para obtener todas las tareas
 app.get('/api/tareas', (req, res) => {
-    obtenerTareas((err, results) => {
+    if (!req.session.usuarioId) {
+        return res.status(401).json({ success: false, message: 'Usuario no autenticado' });
+    }
+
+    const usuarioId = req.session.usuarioId;
+    const rol = req.session.rol; // Asegúrate de guardar el rol en la sesión al iniciar sesión
+
+    let query;
+    let params;
+
+    if (rol === 'admin') {
+        // Si el usuario es administrador, obtener todas las tareas
+        query = `
+            SELECT t.id, t.descripcion, u.nombreUsuario
+            FROM tareas t
+            JOIN usuarios u ON t.idUsuario = u.id
+        `;
+        params = [];
+    } else {
+        // Si el usuario es normal, obtener solo sus tareas
+        query = `
+            SELECT t.id, t.descripcion, u.nombreUsuario
+            FROM tareas t
+            JOIN usuarios u ON t.idUsuario = u.id
+            WHERE t.idUsuario = ?
+        `;
+        params = [usuarioId];
+    }
+
+    connection.query(query, params, (err, results) => {
         if (err) {
             console.error('Error al obtener las tareas:', err);
-            return res.status(500).json({ success: false, message: 'Error al obtener las tareas' });
+            return res.status(500).json({ message: 'Error al obtener las tareas' });
         }
         res.json(results);
     });
@@ -607,46 +647,19 @@ app.get('/api/aprendices', (req, res) => {
 
 // Ruta para agregar productos del minibar
 app.post('/api/productos_minibar', (req, res) => {
-    const { nombre, referencia, precio, imagen, cantidad } = req.body;
-
-    // Lista de valores permitidos para referencia
-    const referenciasPermitidas = ['bebidas-energeticas', 'galletas', 'golosinas', 'snaks', 'gaseosas', 'paqueteria'];
-
-    // Validar los datos recibidos
-    if (!nombre || !referencia || !precio || !cantidad) {
-        return res.status(400).json({ 
-            success: false, 
-            message: "Todos los campos son obligatorios" 
-        });
-    }
-
-    if (!referenciasPermitidas.includes(referencia)) {
-        return res.status(400).json({ 
-            success: false, 
-            message: `La referencia '${referencia}' no es válida. Valores permitidos: ${referenciasPermitidas.join(', ')}` 
-        });
-    }
+    const { nombre, referencia, precio, cantidad } = req.body;
 
     const query = `
-        INSERT INTO producto_minibar (nombre, referencia, precio, imagen, cantidad) 
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO producto_minibar (nombre, referencia, precio, cantidad)
+        VALUES (?, ?, ?, ?)
     `;
 
-    connection.query(query, [nombre, referencia, precio, imagen, cantidad], (err, results) => {
+    connection.query(query, [nombre, referencia, precio, cantidad], (err, results) => {
         if (err) {
-            console.error("Error al guardar producto del minibar:", err);
-            return res.status(500).json({ 
-                success: false, 
-                message: "Error al guardar producto en la base de datos.",
-                error: err.message 
-            });
+            console.error('Error al agregar el producto:', err);
+            return res.status(500).json({ success: false, message: 'Error al agregar el producto' });
         }
-
-        res.json({ 
-            success: true, 
-            message: "Producto guardado correctamente", 
-            id: results.insertId 
-        });
+        res.json({ success: true, message: 'Producto agregado exitosamente' });
     });
 });
 
@@ -984,6 +997,162 @@ app.get('/api/productos_por_habitacion', (req, res) => {
             success: true,
             rooms: rooms
         });
+    });
+});
+
+app.get('/api/buscar_productos', (req, res) => {
+    const { referencia, nombre } = req.query;
+
+    let query = `
+        SELECT 
+            pm.id, 
+            pm.nombre, 
+            pm.referencia, 
+            pm.precio, 
+            pm.imagen, 
+            pm.cantidad, 
+            COALESCE(SUM(ap.cantidad), 0) AS totalAsignado,
+            (pm.cantidad - COALESCE(SUM(ap.cantidad), 0)) AS disponible,
+            IFNULL(GROUP_CONCAT(CONCAT(ap.numeroHabitacion, ':', ap.cantidad) SEPARATOR ', '), 'Ninguna') AS asignaciones
+        FROM producto_minibar pm
+        LEFT JOIN asignacion_producto ap ON pm.id = ap.productoId
+    `;
+
+    let params = [];
+    let conditions = [];
+
+    // Filtrar por referencia si se proporciona
+    if (referencia && referencia.toLowerCase() !== 'todos') {
+        conditions.push(`LOWER(pm.referencia) = ?`);
+        params.push(referencia.toLowerCase());
+    }
+
+    // Filtrar por nombre si se proporciona
+    if (nombre) {
+        conditions.push(`LOWER(pm.nombre) LIKE ?`);
+        params.push(`%${nombre.toLowerCase()}%`);
+    }
+
+    // Agregar condiciones a la consulta si existen
+    if (conditions.length > 0) {
+        query += ` WHERE ` + conditions.join(' AND ');
+    }
+
+    query += ` GROUP BY pm.id, pm.nombre, pm.referencia, pm.precio, pm.imagen, pm.cantidad`;
+
+    connection.query(query, params, (err, results) => {
+        if (err) {
+            console.error("Error al buscar productos del minibar:", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Error al buscar productos",
+                error: err.message 
+            });
+        }
+
+        // Ajustar los valores nulos de asignaciones y calcular correctamente los disponibles
+        results.forEach(product => {
+            product.asignaciones = product.asignaciones || 'Ninguna';
+            product.disponible = Math.max(0, product.disponible); // Asegurar que no sea negativo
+        });
+
+        res.json({
+            success: true, 
+            products: results
+        });
+    });
+});
+
+app.post('/api/productos', (req, res) => {
+    const { nombre, referencia, precio, cantidad } = req.body;
+
+    if (!nombre || !referencia || !precio || !cantidad) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios.' });
+    }
+
+    const query = `
+        INSERT INTO producto_minibar (nombre, referencia, precio, cantidad)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    connection.query(query, [nombre, referencia, precio, cantidad], (err, results) => {
+        if (err) {
+            console.error('Error al agregar el producto:', err);
+            return res.status(500).json({ success: false, message: 'Error al agregar el producto.' });
+        }
+        res.json({ success: true, message: 'Producto agregado exitosamente.' });
+    });
+});
+
+app.get('/api/productos', (req, res) => {
+    const query = `
+        SELECT 
+            id, 
+            nombre, 
+            referencia, 
+            precio, 
+            cantidad 
+        FROM producto_minibar
+    `;
+
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener los productos:', err);
+            return res.status(500).json({ message: 'Error al obtener los productos' });
+        }
+        res.json(results);
+    });
+});
+
+app.get('/api/productos/:id', (req, res) => {
+    const productId = req.params.id;
+
+    const query = `
+        SELECT 
+            id, 
+            nombre, 
+            referencia, 
+            precio, 
+            cantidad 
+        FROM producto_minibar
+        WHERE id = ?
+    `;
+
+    connection.query(query, [productId], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el producto:', err);
+            return res.status(500).json({ message: 'Error al obtener el producto' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        res.json(results[0]);
+    });
+});
+
+app.put('/api/productos/:id', (req, res) => {
+    const productId = req.params.id;
+    const { nombre, referencia, precio, cantidad } = req.body;
+
+    const query = `
+        UPDATE producto_minibar
+        SET nombre = ?, referencia = ?, precio = ?, cantidad = ?
+        WHERE id = ?
+    `;
+
+    connection.query(query, [nombre, referencia, precio, cantidad, productId], (err, results) => {
+        if (err) {
+            console.error('Error al actualizar el producto:', err);
+            return res.status(500).json({ success: false, message: 'Error al actualizar el producto.' });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado.' });
+        }
+
+        res.json({ success: true, message: 'Producto actualizado exitosamente.' });
     });
 });
 

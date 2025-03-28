@@ -1314,3 +1314,57 @@ body.dark-mode {
 .assign-room-btn:hover, .unassign-room-btn:hover {
     background-color: #45a049; /* Color al pasar el ratón */
 }
+
+/* Estilo unificado para los botones "Agregar a Habitación" y "Editar" */
+.product-action-btn {
+    background-color: #28A745; /* Color verde */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Asegurar que el botón ocupe todo el ancho del contenedor */
+}
+
+.product-action-btn:hover {
+    background-color: #1e7e34; /* Verde más oscuro al pasar el ratón */
+}
+
+/* Estilo para el botón "Agregar a Habitación" */
+.add-to-room-btn {
+    background-color: #28A745; /* Color verde */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Asegurar que el botón ocupe todo el ancho del contenedor */
+}
+
+.add-to-room-btn:hover {
+    background-color: #1e7e34; /* Verde más oscuro al pasar el ratón */
+}
+
+/* Estilo para el botón "Editar" */
+.edit-product-btn {
+    background-color: #28A745; /* Color verde */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Asegurar que el botón ocupe todo el ancho del contenedor */
+}
+
+.edit-product-btn:hover {
+    background-color: #1e7e34; /* Verde más oscuro al pasar el ratón */
+}

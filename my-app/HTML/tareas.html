@@ -85,6 +85,13 @@
             <line x1="8" y1="2" x2="8" y2="6" />
             <line x1="3" y1="10" x2="21" y2="10" /></svg>
             </a>
+            <a href="/HTML/minibar.html" class="app-sidebar-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-glass">
+                    <path d="M21 2H3"></path>
+                    <path d="M17 2l-2 14H9L7 2"></path>
+                    <path d="M9 22h6"></path>
+                </svg>
+            </a>
         <!--Aqui es el icono de la cuenta-->
         <a href="/HTML/cuenta.html" class="app-sidebar-link">
             <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-file-text" viewBox="0 0 24 24">
@@ -167,18 +174,19 @@
             event.preventDefault();
             const taskInput = document.getElementById('newTask');
             const task = taskInput.value;
+            const nombreUsuario = localStorage.getItem('nombreUsuario');
 
             fetch('/api/tareas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ descripcion: task })
+                body: JSON.stringify({ descripcion: task, nombreUsuario: nombreUsuario })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    agregarTareaALaLista(data.results.insertId, task);
+                    agregarTareaALaLista(data.results.insertId, task, nombreUsuario);
                     taskInput.value = '';
                 } else {
                     console.error('Error al agregar la tarea:', data.message);
@@ -189,20 +197,20 @@
             });
         });
 
-        function agregarTareaALaLista(id, descripcion) {
+        function agregarTareaALaLista(id, descripcion, nombreUsuario) {
             const taskList = document.getElementById('task-list');
             const taskItem = document.createElement('div');
             taskItem.classList.add('task-item');
             taskItem.setAttribute('data-id', id);
 
             const taskDescription = document.createElement('span');
-            taskDescription.textContent = descripcion;
+            taskDescription.textContent = `${descripcion} (Agregado por: ${nombreUsuario})`;
             taskItem.appendChild(taskDescription);
 
             const updateButton = document.createElement('button');
             updateButton.textContent = 'Actualizar';
             updateButton.classList.add('update-button');
-            updateButton.addEventListener('click', function() {
+            updateButton.addEventListener('click', function () {
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.value = descripcion;
@@ -212,7 +220,7 @@
                 const saveButton = document.createElement('button');
                 saveButton.textContent = 'Guardar';
                 saveButton.classList.add('save-button');
-                saveButton.addEventListener('click', function() {
+                saveButton.addEventListener('click', function () {
                     const nuevaDescripcion = input.value;
                     actualizarTarea(id, nuevaDescripcion, taskDescription, input, saveButton, updateButton);
                 });
@@ -223,7 +231,7 @@
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Eliminar';
             deleteButton.classList.add('delete-button');
-            deleteButton.addEventListener('click', function() {
+            deleteButton.addEventListener('click', function () {
                 eliminarTarea(id, taskItem);
             });
             taskItem.appendChild(deleteButton);
@@ -275,17 +283,17 @@
         // Función para cargar las tareas existentes
         function cargarTareas() {
             fetch('/api/tareas')
-            .then(response => response.json())
-            .then(data => {
-                const taskList = document.getElementById('task-list');
-                taskList.innerHTML = ''; // Limpiar la lista de tareas
-                data.forEach(tarea => {
-                    agregarTareaALaLista(tarea.id, tarea.descripcion);
+                .then(response => response.json())
+                .then(data => {
+                    const taskList = document.getElementById('task-list');
+                    taskList.innerHTML = ''; // Limpiar la lista de tareas
+                    data.forEach(tarea => {
+                        agregarTareaALaLista(tarea.id, tarea.descripcion, tarea.nombreUsuario);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar las tareas:', error);
                 });
-            })
-            .catch(error => {
-                console.error('Error al cargar las tareas:', error);
-            });
         }
 
 // Función para guardar las observaciones en localStorage
