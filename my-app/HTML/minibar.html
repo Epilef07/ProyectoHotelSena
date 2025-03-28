@@ -115,8 +115,8 @@
                 </div>
                 <!-- Agrega el info-cards aquí -->
                 <div class="info-cards">
-                    <div class="info-card large">
-                        <button class="add-product-btn" id="openModalBtn" style="font-size: 1.2em; padding: 10px 20px; display: block; margin: 0 auto; background-color: #4CAF50;">Agregar productos</button>
+                    <div class="info-card large" style="justify-content: flex-start;">
+                        <button class="add-product-btn" id="openModalBtn">Agregar productos</button>
                     </div>
                     <div class="info-card large">
                         <div class="search-container">
@@ -137,48 +137,14 @@
                             <input type="text" class="search-input" id="searchName" placeholder="Buscar por nombre">
                         </div>
                     </div>
-                </div>
-                <div id="productCards" class="info-cards">
-                    <!-- Aquí se agregarán los productos dinámicamente -->
-                    <!-- Ejemplo de producto con mayor tamaño y legibilidad -->
-                    <div class="product-card" style="font-size: 1.5em; padding: 20px; border: 1px solid #ccc; margin-bottom: 15px; border-radius: 10px; background-color: #f9f9f9;">
-                        <p><strong>Nombre:</strong> Producto Ejemplo</p>
-                        <p><strong>Referencia:</strong> Galletas</p>
-                        <p><strong>Precio:</strong> $10.00</p>
-                        <p><strong>Cantidad:</strong> 5</p>
+                    <div class="info-card large" style="justify-content: flex-start;">
+                        <button class="add-product-btn" id="addToExistingBtn">Agregar a existente</button>
                     </div>
                 </div>
+                <div id="productCards" class="info-cards">
+                    <!-- Aquí se agregarán los productos dinámicamente al cargar la página -->
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModalBtn">&times;</span>
-            <h2>Agregar Producto</h2>
-            <form id="productForm">
-                <label for="productName">Nombre del producto:</label>
-                <input type="text" id="productName" name="productName" required>
-                
-                <label for="productRef">Referencia:</label>
-                <select id="productRef" name="productRef" required>
-                    <option value="bebidas-energeticas">Bebidas energéticas</option>
-                    <option value="galletas">Galletas</option>
-                    <option value="golosinas">Golosinas</option>
-                    <option value="gaseosas">Gaseosas</option>
-                    <option value="paqueteria">Paquetería</option>
-                </select>
-                
-                <label for="productPrice">Precio:</label>
-                <input type="number" id="productPrice" name="productPrice" required>
-                
-                <label for="productQuantity">Cantidad:</label>
-                <input type="number" id="productQuantity" name="productQuantity" required>
-                
-                <button type="submit" class="add-product-btn">Guardar cambios</button>
-            </form>
-            <div id="formMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
         </div>
     </div>
 
@@ -208,17 +174,64 @@
             <span class="close" id="closeUnassignModalBtn">&times;</span>
             <h2>Desasignar Producto de Habitación</h2>
             <form id="unassignProductForm">
-                <label for="unassignRoomNumber">Número de Habitación:</label>
+                <label for="unassignRoomNumber">Habitaciones con asignaciones:</label>
                 <select id="unassignRoomNumber" name="unassignRoomNumber" required>
                     <!-- Las opciones se llenarán dinámicamente -->
                 </select>
                 
-                <label for="unassignQuantity">Cantidad:</label>
-                <input type="number" id="unassignQuantity" name="unassignQuantity" required>
+                <label for="unassignQuantity">Cantidad a desasignar:</label>
+                <input type="number" id="unassignQuantity" name="unassignQuantity" min="1" required>
                 
                 <button type="submit" class="add-product-btn">Desasignar</button>
             </form>
             <div id="unassignFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
+        </div>
+    </div>
+
+    <!-- Modal para agregar más cantidad a un producto existente -->
+    <div id="addToExistingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAddToExistingModalBtn">&times;</span>
+            <h2>Agregar a Producto Existente</h2>
+            <form id="addToExistingForm">
+                <label for="existingProductId">ID del Producto:</label>
+                <input type="number" id="existingProductId" name="existingProductId" required>
+                
+                <label for="additionalQuantity">Cantidad a Agregar:</label>
+                <input type="number" id="additionalQuantity" name="additionalQuantity" required>
+                
+                <button type="submit" class="add-product-btn">Agregar</button>
+            </form>
+            <div id="addToExistingFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
+        </div>
+    </div>
+
+    <!-- Modal para agregar productos al minibar -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModalBtn">&times;</span>
+            <h2>Agregar Producto al Minibar</h2>
+            <form id="productForm">
+                <label for="productName">Nombre del producto:</label>
+                <input type="text" id="productName" name="productName" required>
+                
+                <label for="productRef">Referencia:</label>
+                <select id="productRef" name="productRef" required>
+                    <option value="galletas">Galletas</option>
+                    <option value="golosinas">Golosinas</option>
+                    <option value="gaseosas">Gaseosas</option>
+                    <option value="paqueteria">Paquetería</option>
+                </select>
+                
+                <label for="productPrice">Precio:</label>
+                <input type="number" id="productPrice" name="productPrice" step="0.01" required>
+                
+                <label for="productQuantity">Cantidad:</label>
+                <input type="number" id="productQuantity" name="productQuantity" required>
+                
+                <button type="submit" class="add-product-btn">Guardar Producto</button>
+            </form>
+            <div id="formMessage" style="margin-top: 10px;"></div>
         </div>
     </div>
 

@@ -86,14 +86,6 @@ CREATE TABLE IF NOT EXISTS huesped_reserva (
     FOREIGN KEY(idHuesped) REFERENCES huesped(id) ON DELETE CASCADE
 );
 
-
-CREATE TABLE IF NOT EXISTS tareas(
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    idUsuario BIGINT NOT NULL,
-    descripcion VARCHAR(255),
-    FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
-);
-
 CREATE TABLE IF NOT EXISTS usuarios (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombreUsuario VARCHAR(255) NOT NULL UNIQUE,
@@ -105,11 +97,18 @@ CREATE TABLE IF NOT EXISTS usuarios (
     FOREIGN KEY (idAprendiz) REFERENCES aprendiz(id)
 );
 
+CREATE TABLE IF NOT EXISTS tareas(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idUsuario BIGINT NOT NULL,
+    descripcion VARCHAR(255),
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
+);
+
 -- Tabla para almacenar los productos del minibar
 CREATE TABLE IF NOT EXISTS producto_minibar (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
-    referencia ENUM('bebidas-energeticas', 'galletas', 'golosinas','gaseosas', 'paqueteria') NOT NULL,
+    referencia ENUM('galletas', 'golosinas','gaseosas', 'paqueteria') NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
     cantidad INT NOT NULL,
 );
