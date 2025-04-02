@@ -114,23 +114,25 @@
                 </div>
                 <div class="info-card" id="reservas-info-cards">
                     <h3>Reservas Actuales</h3>
-                    <table id="reservas-actuales">
-                        <thead>
-                            <tr>
-                                <th>Número de Habitación</th>
-                                <th>ID Huésped</th>
-                                <th>Fecha de Ingreso</th>
-                                <th>Fecha de Salida</th>
-                                <th>Abono</th>
-                                <th>Días Hospedado</th>
-                                <th>Cantidad de Acompañantes</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Las filas de la tabla se llenarán dinámicamente con JavaScript -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="reservas-actuales">
+                            <thead>
+                                <tr>
+                                    <th>Número de Habitación</th>
+                                    <th>ID Huésped</th>
+                                    <th>Fecha de Ingreso</th>
+                                    <th>Fecha de Salida</th>
+                                    <th>Abono</th>
+                                    <th>Días Hospedado</th>
+                                    <th>Cantidad de Acompañantes</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Las filas de la tabla se llenarán dinámicamente con JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -198,7 +200,9 @@
                                             '${abonoCompleto}',
                                             '${diasHospedado}',
                                             '${cantidadAcompanantes}',
-                                            '${documentosAcompanantesTexto}'
+                                            '${documentosAcompanantesTexto}',
+                                            '${reserva.codigoReserva}',
+                                            '${reserva.tipoPersona}' <!-- Aquí se pasa el tipo de persona -->
                                         )">
                                             Descargar Abono
                                         </button>
@@ -206,7 +210,13 @@
                                             '${reserva.numeroHabitacion}',
                                             '${reserva.idHuesped}',
                                             '${fechaIngreso}',
-                                            '${fechaSalida}'
+                                            '${fechaSalida}',
+                                            '${abonoCompleto}',
+                                            '${diasHospedado}',
+                                            '${cantidadAcompanantes}',
+                                            '${documentosAcompanantesTexto}',
+                                            '${reserva.codigoReserva}',
+                                            '${reserva.tipoPersona}' <!-- Aquí se pasa el tipo de persona -->
                                         )">
                                             Descargar Factura
                                         </button>
@@ -235,8 +245,6 @@
                 document.getElementById('nombre-usuario').textContent = nombreUsuario;
             }
         });
-    </script>
-    <script>
         function cerrarSesion() {
             localStorage.removeItem('nombreUsuario');
         }

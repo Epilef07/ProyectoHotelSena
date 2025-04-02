@@ -7,6 +7,7 @@
     <title>MINIBAR</title>
     <link rel="shortcut icon" href="/IMAGENES/iconSena.png">
     <link rel="stylesheet" href="/CSS/minibar.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body style="padding-bottom: 0px;">
     <!--todo este es el encabezado -->
@@ -126,9 +127,7 @@
                                 </svg>
                             </button>
                             <select class="search-select" id="searchRef">
-                                <option value="">Seleccionar</option>
                                 <option value="todos">Todos</option>
-                                <option value="bebidas-energeticas">Bebidas energéticas</option>
                                 <option value="galletas">Galletas</option>
                                 <option value="golosinas">Golosinas</option>
                                 <option value="gaseosas">Gaseosas</option>
@@ -148,11 +147,31 @@
         </div>
     </div>
 
+    <!-- Modal para asignar productos a habitaciones -->
+    <div id="assignProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAssignModalBtn">&times;</span>
+            <h2>Asignar Producto a Habitación</h2>
+            <form id="assignProductForm">
+                <label for="roomNumber">Número de Habitación:</label>
+                <select id="roomNumber" name="roomNumber" required>
+                    <option value="">Seleccione una habitación</option>
+                </select>
+                
+                <label for="assignQuantity">Cantidad:</label>
+                <input type="number" id="assignQuantity" name="assignQuantity" required>
+                
+                <button type="submit" class="add-product-btn" id="modalSubmitButton">Asignar</button>
+            </form>
+            <div id="assignFormMessage" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+
     <!-- Modal para asignar/desasignar productos a habitaciones -->
     <div id="assignProductModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeAssignModalBtn">&times;</span>
-            <h2 id="modalTitle">Asignar Producto a Habitación</h2> <!-- Cambiar dinámicamente el título -->
+            <h2 id="modalTitle">Asignar Producto a Habitación</h2>
             <form id="assignProductForm">
                 <label for="roomNumber">Número de Habitación:</label>
                 <select id="roomNumber" name="roomNumber" required>
@@ -162,9 +181,9 @@
                 <label for="assignQuantity">Cantidad:</label>
                 <input type="number" id="assignQuantity" name="assignQuantity" required>
                 
-                <button type="submit" class="add-product-btn" id="modalSubmitButton">Asignar</button> <!-- Cambiar dinámicamente el texto -->
+                <button type="submit" class="add-product-btn" id="modalSubmitButton">Asignar</button>
             </form>
-            <div id="assignFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
+            <div id="assignFormMessage" style="margin-top: 10px;"></div>
         </div>
     </div>
 
@@ -203,6 +222,23 @@
                 <button type="submit" class="add-product-btn">Agregar</button>
             </form>
             <div id="addToExistingFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
+        </div>
+    </div>
+
+    <!-- Modal para eliminar productos -->
+    <div id="deleteProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeDeleteProductModalBtn">&times;</span>
+            <h2>Eliminar Producto</h2>
+            <form id="deleteProductForm">
+                <label for="deleteProductId">ID del Producto:</label>
+                <input type="number" id="deleteProductId" name="deleteProductId" required>
+                
+                <p style="color: red;">¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.</p>
+                
+                <button type="submit" class="add-product-btn">Eliminar</button>
+            </form>
+            <div id="deleteFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
         </div>
     </div>
 
@@ -249,7 +285,18 @@
             sidebar.classList.toggle('hidden');
         });
 
+        // Mostrar el nombre del usuario al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            const nombreUsuario = localStorage.getItem('nombreUsuario');
+            if (nombreUsuario) {
+                document.getElementById('nombre-usuario').textContent = nombreUsuario;
+            }
+        });
 
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            localStorage.removeItem('nombreUsuario');
+        }
     </script>
 </body>
 </html>

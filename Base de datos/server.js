@@ -278,15 +278,16 @@ app.get('/api/habitaciones-disponibles', (_, res) => {
 });
 
 
-app.get('/api/habitaciones', (_, res) => {
-    const query = `SELECT numeroHabitacion, ocupada FROM hoteleria.habitacion`;
+app.get('/api/habitaciones', (req, res) => {
+    const query = `SELECT numeroHabitacion, ocupada FROM habitacion`; // Cambiado de "habitaciones" a "habitacion"
 
     connection.query(query, (err, results) => {
         if (err) {
-            console.error('Error al obtener habitaciones:', err);
-            return res.status(500).json({ success: false, message: 'Error al obtener habitaciones' });
+            console.error('Error al obtener las habitaciones:', err);
+            return res.status(500).json({ success: false, message: 'Error al obtener las habitaciones.' });
         }
-        res.json(results);
+
+        res.json(results); // Devuelve todas las habitaciones
     });
 });
 
@@ -418,6 +419,7 @@ app.get('/api/reserva', (req, res) => {
 app.get('/api/reserva/:codigoReserva', (req, res) => {
     const { codigoReserva } = req.params;
 
+    // Consulta principal para obtener los datos de la reserva
     const queryReserva = `
         SELECT 
             r.codigoReserva,
@@ -432,12 +434,32 @@ app.get('/api/reserva/:codigoReserva', (req, res) => {
         WHERE r.codigoReserva = ?
     `;
 
+    // Consulta para obtener los acompañantes
     const queryAcompanantes = `
         SELECT idHuesped AS documento
         FROM huesped_reserva
         WHERE codigoReserva = ?
     `;
 
+    // Consulta para obtener los productos del minibar consumidos
+    const queryMinibar = `
+        SELECT 
+            pm.id AS productoId,
+            pm.nombre AS producto,
+            pm.precio,
+            ap.cantidad AS cantidadAsignada,
+            dr.cantidadConsumida
+        FROM 
+            producto_minibar pm
+        LEFT JOIN 
+            asignacion_producto ap ON pm.id = ap.productoId
+        LEFT JOIN 
+            detalle_reserva dr ON pm.id = dr.productoId AND dr.codigoReserva = ?
+        WHERE 
+            ap.numeroHabitacion = (SELECT numeroHabitacion FROM reserva WHERE codigoReserva = ?)
+    `;
+
+    // Ejecutar la consulta principal
     connection.query(queryReserva, [codigoReserva], (err, reservaResults) => {
         if (err) {
             console.error('Error al obtener la reserva:', err);
@@ -448,18 +470,29 @@ app.get('/api/reserva/:codigoReserva', (req, res) => {
             return res.status(404).json({ message: 'Reserva no encontrada' });
         }
 
-        // Obtener los acompañantes relacionados con la reserva
+        const reserva = reservaResults[0];
+
+        // Ejecutar la consulta para los acompañantes
         connection.query(queryAcompanantes, [codigoReserva], (err, acompanantesResults) => {
             if (err) {
                 console.error('Error al obtener los acompañantes:', err);
                 return res.status(500).json({ message: 'Error al obtener los acompañantes' });
             }
 
-            // Combinar los datos de la reserva con los acompañantes
-            const reserva = reservaResults[0];
             reserva.acompanantes = acompanantesResults;
 
-            res.json(reserva);
+            // Ejecutar la consulta para los productos del minibar
+            connection.query(queryMinibar, [codigoReserva, codigoReserva], (err, minibarResults) => {
+                if (err) {
+                    console.error('Error al obtener los productos del minibar:', err);
+                    return res.status(500).json({ message: 'Error al obtener los productos del minibar' });
+                }
+
+                reserva.minibar = minibarResults;
+
+                // Enviar la respuesta combinada
+                res.json(reserva);
+            });
         });
     });
 });
@@ -683,43 +716,7 @@ app.get('/api/productos_minibar_con_asignaciones', (req, res) => {
     });
 });
 
-app.get('/api/productos_minibar', (req, res) => {
-    const query = `
-        SELECT 
-            pm.id, 
-            pm.nombre, 
-            pm.referencia, 
-            pm.precio, 
-            pm.cantidad, 
-            COALESCE(SUM(ap.cantidad), 0) AS totalAsignado,
-            (pm.cantidad - COALESCE(SUM(ap.cantidad), 0)) AS disponible,
-            IFNULL(GROUP_CONCAT(CONCAT(ap.numeroHabitacion, ':', ap.cantidad) SEPARATOR ', '), 'Ninguna') AS asignaciones
-        FROM producto_minibar pm
-        LEFT JOIN asignacion_producto ap ON pm.id = ap.productoId
-        GROUP BY pm.id, pm.nombre, pm.referencia, pm.precio, pm.cantidad
-    `;
 
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error("Error al obtener productos del minibar:", err);
-            return res.status(500).json({ 
-                success: false, 
-                message: "Error al obtener productos",
-                error: err.message 
-            });
-        }
-
-        // Asegurar que las asignaciones y disponibles no sean nulos
-        results.forEach(product => {
-            product.asignaciones = product.asignaciones || 'Ninguna';
-            product.disponible = Math.max(0, product.disponible); // Asegurar que no sea negativo
-        });
-
-        res.json(results);
-    });
-});
-
-// Ruta para buscar productos del minibar con filtros y asignaciones
 app.get('/api/productos_minibar', (req, res) => {
     const { referencia, nombre } = req.query;
 
@@ -739,7 +736,7 @@ app.get('/api/productos_minibar', (req, res) => {
     let params = [];
     let conditions = [];
 
-    // Si referencia no es "todos", aplicamos el filtro
+    // Filtrar por referencia si se proporciona y no es "todos"
     if (referencia && referencia.toLowerCase() !== 'todos') {
         conditions.push(`LOWER(pm.referencia) = ?`);
         params.push(referencia.toLowerCase());
@@ -757,6 +754,9 @@ app.get('/api/productos_minibar', (req, res) => {
     }
 
     query += ` GROUP BY pm.id, pm.nombre, pm.referencia, pm.precio, pm.cantidad`;
+
+    console.log("Consulta SQL:", query); // Depurar la consulta
+    console.log("Parámetros:", params); // Depurar los parámetros
 
     connection.query(query, params, (err, results) => {
         if (err) {
@@ -1062,6 +1062,148 @@ app.get('/api/productos_minibar/:id/asignaciones', (req, res) => {
         }
 
         res.json(results);
+    });
+});
+
+app.post('/api/agregar_a_existente', (req, res) => {
+    const { productId, additionalQuantity } = req.body;
+
+    // Validar los datos recibidos
+    if (!productId || !additionalQuantity || additionalQuantity <= 0) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios y la cantidad debe ser mayor a 0.' });
+    }
+
+    // Consulta para actualizar la cantidad del producto
+    const query = `
+        UPDATE producto_minibar
+        SET cantidad = cantidad + ?
+        WHERE id = ?
+    `;
+
+    connection.query(query, [additionalQuantity, productId], (err, results) => {
+        if (err) {
+            console.error("Error al actualizar la cantidad del producto:", err);
+            return res.status(500).json({ success: false, message: 'Error al actualizar la cantidad del producto.' });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado.' });
+        }
+
+        res.json({ success: true, message: 'Cantidad agregada exitosamente.' });
+    });
+});
+
+// Ruta para eliminar un producto
+app.delete('/api/eliminar_producto', (req, res) => {
+    const { productId } = req.body;
+
+    if (!productId) {
+        return res.status(400).json({ success: false, message: 'El ID del producto es obligatorio.' });
+    }
+
+    const query = `DELETE FROM producto_minibar WHERE id = ?`;
+
+    connection.query(query, [productId], (err, results) => {
+        if (err) {
+            console.error('Error al eliminar el producto:', err);
+            return res.status(500).json({ success: false, message: 'Error al eliminar el producto.' });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado.' });
+        }
+
+        res.json({ success: true, message: 'Producto eliminado exitosamente.' });
+    });
+});
+
+app.get('/api/habitacion/:numeroHabitacion/minibar', (req, res) => {
+    const { numeroHabitacion } = req.params;
+
+    const query = `
+        SELECT 
+            p.id AS productoId,
+            p.nombre AS producto,
+            p.referencia,
+            p.precio,
+            ap.cantidad AS cantidadAsignada
+        FROM 
+            asignacion_producto ap
+        JOIN 
+            producto_minibar p ON ap.productoId = p.id
+        WHERE 
+            ap.numeroHabitacion = ?;
+    `;
+
+    connection.query(query, [numeroHabitacion], (err, results) => {
+        if (err) {
+            console.error('Error al obtener los productos del minibar:', err);
+            return res.status(500).json({ success: false, message: 'Error al obtener los productos del minibar.' });
+        }
+
+        res.json({ success: true, productos: results });
+    });
+});
+
+app.post('/api/reserva/:codigoReserva/minibar', (req, res) => {
+    const { codigoReserva } = req.params;
+    const { productos } = req.body; // Array de productos consumidos
+
+    if (!productos || productos.length === 0) {
+        return res.status(400).json({ success: false, message: 'No se proporcionaron productos consumidos.' });
+    }
+
+    const query = `
+        INSERT INTO detalle_reserva (codigoReserva, productoId, minibarConsumido, cantidadConsumida)
+        VALUES ?
+        ON DUPLICATE KEY UPDATE minibarConsumido = VALUES(minibarConsumido), cantidadConsumida = VALUES(cantidadConsumida);
+    `;
+
+    const values = productos.map(producto => [
+        codigoReserva,
+        producto.productoId,
+        true, // minibarConsumido
+        producto.cantidadConsumida
+    ]);
+
+    connection.query(query, [values], (err, results) => {
+        if (err) {
+            console.error('Error al guardar los productos consumidos del minibar:', err);
+            return res.status(500).json({ success: false, message: 'Error al guardar los productos consumidos del minibar.' });
+        }
+
+        res.json({ success: true, message: 'Productos consumidos del minibar guardados correctamente.' });
+    });
+});
+
+app.get('/api/reserva/:codigoReserva/minibar', (req, res) => {
+    const { codigoReserva } = req.params;
+
+    const query = `
+        SELECT 
+            pm.id AS productoId,
+            pm.nombre AS producto,
+            pm.precio,
+            ap.cantidad AS cantidadAsignada,
+            dr.cantidadConsumida
+        FROM 
+            producto_minibar pm
+        LEFT JOIN 
+            asignacion_producto ap ON pm.id = ap.productoId
+        LEFT JOIN 
+            detalle_reserva dr ON pm.id = dr.productoId AND dr.codigoReserva = ?
+        WHERE 
+            ap.numeroHabitacion = (SELECT numeroHabitacion FROM reserva WHERE codigoReserva = ?);
+    `;
+
+    connection.query(query, [codigoReserva, codigoReserva], (err, results) => {
+        if (err) {
+            console.error('Error al obtener los productos del minibar:', err);
+            return res.status(500).json({ success: false, message: 'Error al obtener los productos del minibar.' });
+        }
+
+        res.json({ success: true, productos: results });
     });
 });
 

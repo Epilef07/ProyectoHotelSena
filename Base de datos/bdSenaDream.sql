@@ -71,11 +71,33 @@ CREATE TABLE IF NOT EXISTS reserva(
     FOREIGN KEY(numeroHabitacion) REFERENCES habitacion(numeroHabitacion),
     FOREIGN KEY(idHuesped) REFERENCES huesped(id)
 );
+-- Tabla para almacenar los productos del minibar
+CREATE TABLE IF NOT EXISTS producto_minibar (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    referencia ENUM('galletas', 'golosinas','gaseosas', 'paqueteria') NOT NULL,
+    precio DECIMAL(10,2) NOT NULL,
+    cantidad INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS asignacion_producto (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    productoId BIGINT NOT NULL,
+    numeroHabitacion SMALLINT NOT NULL,
+    cantidad INT NOT NULL,
+    fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY (productoId, numeroHabitacion),
+    FOREIGN KEY (productoId) REFERENCES producto_minibar(id),
+    FOREIGN KEY (numeroHabitacion) REFERENCES habitacion(numeroHabitacion)
+);
+
 CREATE TABLE IF NOT EXISTS detalle_reserva (
     idDetalle BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    productoId BIGINT,
     codigoReserva BIGINT NOT NULL,
     minibarConsumido BOOLEAN DEFAULT FALSE,
     cantidadConsumida SMALLINT DEFAULT 0,
+    FOREIGN KEY (productoId) REFERENCES producto_minibar(id),
     FOREIGN KEY(codigoReserva) REFERENCES reserva(codigoReserva) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS huesped_reserva (
@@ -110,7 +132,7 @@ CREATE TABLE IF NOT EXISTS producto_minibar (
     nombre VARCHAR(255) NOT NULL,
     referencia ENUM('galletas', 'golosinas','gaseosas', 'paqueteria') NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
-    cantidad INT NOT NULL,
+    cantidad INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS asignacion_producto (

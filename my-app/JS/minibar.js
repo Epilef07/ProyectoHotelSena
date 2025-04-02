@@ -154,16 +154,17 @@ document.addEventListener('DOMContentLoaded', function() {
             assignButton.className = 'assign-room-btn add-product-btn';
             assignButton.setAttribute('data-id', product.id);
 
-            const unassignButton = document.createElement('button');
-            unassignButton.textContent = 'Desasignar Habitación';
-            unassignButton.className = 'unassign-room-btn add-product-btn';
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar Producto';
+            deleteButton.className = 'delete-product-btn add-product-btn';
+            deleteButton.setAttribute('data-id', product.id);
 
             card.appendChild(id);
             card.appendChild(name);
             card.appendChild(disponible);
             card.appendChild(asignaciones);
             card.appendChild(assignButton);
-            card.appendChild(unassignButton);
+            card.appendChild(deleteButton);
 
             productCards.appendChild(card);
         } catch (error) {
@@ -401,15 +402,21 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/api/productos_minibar?referencia=todos')
             .then(response => response.json())
             .then(data => {
+                console.log("Respuesta de la API:", data); // Depurar la respuesta
                 const productCards = document.getElementById('productCards');
                 productCards.innerHTML = ''; // Limpiar las tarjetas existentes
 
-                if (data.success) {
+                // Verificar si la respuesta es un array
+                if (Array.isArray(data)) {
+                    data.forEach(product => {
+                        addProductCard(product); // Usar la función para agregar cada producto
+                    });
+                } else if (data.success) {
                     data.products.forEach(product => {
                         addProductCard(product); // Usar la función para agregar cada producto
                     });
                 } else {
-                    console.error("Error al cargar los productos:", data.message);
+                    console.error("Error al cargar los productos:", data.message || "Estructura de respuesta inesperada.");
                 }
             })
             .catch(error => {
@@ -417,21 +424,53 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Cargar habitaciones en el modal de asignar producto
+    function loadRooms() {
+        fetch('/api/habitaciones')
+            .then(response => response.json())
+            .then(data => {
+                const roomSelect = document.getElementById('roomNumber');
+                roomSelect.innerHTML = '<option value="">Seleccione una habitación</option>'; // Limpiar las opciones existentes
+
+                data.forEach(habitacion => {
+                    const ocupada = habitacion.ocupada === 1 ? ' (Ocupada)' : ' (Libre)';
+                    const option = document.createElement('option');
+                    option.value = habitacion.numeroHabitacion;
+                    option.textContent = `Habitación ${habitacion.numeroHabitacion}${ocupada}`;
+                    roomSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar las habitaciones:', error));
+    }
+
+    // Abrir el modal y cargar las habitaciones
+    document.getElementById('assignProductModal').addEventListener('show', loadRooms);
+
     // Llamar a loadProducts al cargar la página
     document.addEventListener('DOMContentLoaded', loadProducts);
 
     function searchProducts() {
         try {
-            const searchRef = document.getElementById('searchRef').value;
-            const searchName = document.getElementById('searchName').value.toLowerCase();
+            const searchRef = document.getElementById('searchRef').value.trim(); // Asegurarse de que no haya espacios
+            const searchName = document.getElementById('searchName').value.trim().toLowerCase();
 
-            fetch(`/api/productos_minibar?referencia=${searchRef}&nombre=${searchName}`)
+            fetch(`/api/productos_minibar?referencia=${encodeURIComponent(searchRef)}&nombre=${encodeURIComponent(searchName)}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log("Respuesta de la API:", data); // Depurar la respuesta
                     const productCards = document.getElementById('productCards');
                     productCards.innerHTML = ''; // Limpiar las tarjetas existentes
 
-                    if (data.success) {
+                    // Verificar si la respuesta es un array
+                    if (Array.isArray(data)) {
+                        data.forEach(product => {
+                            addProductCard(product); // Usar la función para agregar cada producto
+                        });
+
+                        if (data.length === 0) {
+                            alert("No se encontraron productos que coincidan con los criterios de búsqueda.");
+                        }
+                    } else if (data.success) {
                         data.products.forEach(product => {
                             addProductCard(product); // Usar la función para agregar cada producto
                         });
@@ -440,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             alert("No se encontraron productos que coincidan con los criterios de búsqueda.");
                         }
                     } else {
-                        throw new Error(data.message);
+                        throw new Error(data.message || "Error desconocido en la respuesta de la API.");
                     }
                 })
                 .catch(error => {
@@ -473,6 +512,73 @@ document.addEventListener('DOMContentLoaded', function() {
             const productId = event.target.parentElement.querySelector('[data-id]').getAttribute('data-id');
             openUnassignModal(productId);
         }
+    });
+
+    // Abrir el modal para eliminar producto
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-product-btn')) {
+            const productId = event.target.getAttribute('data-id');
+            document.getElementById('deleteProductId').value = productId; // Prellenar el ID del producto
+            document.getElementById('deleteProductModal').style.display = 'block';
+        }
+    });
+
+    // Cerrar el modal de eliminar producto
+    document.getElementById('closeDeleteProductModalBtn').addEventListener('click', function() {
+        document.getElementById('deleteProductModal').style.display = 'none';
+    });
+
+    // Manejar el formulario de eliminación de producto
+    document.getElementById('deleteProductForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const productId = document.getElementById('deleteProductId').value;
+
+        fetch(`/api/eliminar_producto`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: parseInt(productId) })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la solicitud al servidor.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito con SweetAlert2
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Producto eliminado exitosamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    document.getElementById('deleteProductModal').style.display = 'none'; // Cerrar el modal
+                    loadProducts(); // Recargar los productos
+                });
+            } else {
+                // Mostrar mensaje de error con SweetAlert2
+                Swal.fire({
+                    title: 'Error',
+                    text: data.message || 'Ocurrió un error al eliminar el producto.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error al eliminar el producto:', error);
+            // Mostrar mensaje de error con SweetAlert2
+            Swal.fire({
+                title: 'Error',
+                text: 'Ocurrió un error al eliminar el producto. Por favor, inténtelo de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        });
     });
 
     // Cargar productos al cargar la página
@@ -543,66 +649,97 @@ window.onclick = function(event) {
     }
 };
 
-// Nueva función para buscar productos del minibar con asignaciones y disponibilidad
-app.get('/api/buscar_productos', (req, res) => {
-    const { referencia, nombre } = req.query;
-
-    let query = `
-        SELECT 
-            pm.id, 
-            pm.nombre, 
-            pm.referencia, 
-            pm.precio, 
-            pm.imagen, 
-            pm.cantidad, 
-            COALESCE(SUM(ap.cantidad), 0) AS totalAsignado,
-            (pm.cantidad - COALESCE(SUM(ap.cantidad), 0)) AS disponible,
-            IFNULL(GROUP_CONCAT(CONCAT(ap.numeroHabitacion, ':', ap.cantidad) SEPARATOR ', '), 'Ninguna') AS asignaciones
-        FROM producto_minibar pm
-        LEFT JOIN asignacion_producto ap ON pm.id = ap.productoId
-    `;
-
-    let params = [];
-    let conditions = [];
-
-    // Filtrar por referencia si se proporciona
-    if (referencia && referencia.toLowerCase() !== 'todos') {
-        conditions.push(`LOWER(pm.referencia) = ?`);
-        params.push(referencia.toLowerCase());
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('assign-room-btn')) {
+        const productId = event.target.getAttribute('data-id');
+        document.getElementById('assignProductModal').style.display = 'block'; // Mostrar el modal
+        cargarHabitaciones(); // Cargar las habitaciones al abrir el modal
     }
-
-    // Filtrar por nombre si se proporciona
-    if (nombre) {
-        conditions.push(`LOWER(pm.nombre) LIKE ?`);
-        params.push(`%${nombre.toLowerCase()}%`);
-    }
-
-    // Agregar condiciones a la consulta si existen
-    if (conditions.length > 0) {
-        query += ` WHERE ` + conditions.join(' AND ');
-    }
-
-    query += ` GROUP BY pm.id, pm.nombre, pm.referencia, pm.precio, pm.imagen, pm.cantidad`;
-
-    connection.query(query, params, (err, results) => {
-        if (err) {
-            console.error("Error al buscar productos del minibar:", err);
-            return res.status(500).json({ 
-                success: false, 
-                message: "Error al buscar productos",
-                error: err.message 
-            });
-        }
-
-        // Ajustar los valores nulos de asignaciones y calcular correctamente los disponibles
-        results.forEach(product => {
-            product.asignaciones = product.asignaciones || 'Ninguna';
-            product.disponible = Math.max(0, product.disponible); // Asegurar que no sea negativo
-        });
-
-        res.json({
-            success: true, 
-            products: results
-        });
-    });
 });
+
+// Cerrar el modal
+document.getElementById('closeAssignModalBtn').addEventListener('click', function() {
+    document.getElementById('assignProductModal').style.display = 'none';
+});
+
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('assign-room-btn')) {
+        const productId = event.target.getAttribute('data-id');
+        document.getElementById('assignProductModal').style.display = 'block';
+        cargarHabitacionesAsignar(); // Cargar las habitaciones al abrir el modal
+    }
+});
+
+// Cerrar el modal
+document.getElementById('closeAssignModalBtn').addEventListener('click', function() {
+    document.getElementById('assignProductModal').style.display = 'none';
+});
+
+// Función para cargar las habitaciones en el modal de "Asignar Habitación"
+function cargarHabitacionesAsignar() {
+    fetch('/api/habitaciones')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('roomNumber'); // ID del <select> en el modal de "Asignar Habitación"
+            select.innerHTML = '<option value="">Seleccione una habitación</option>'; // Limpiar las opciones existentes
+
+            data.forEach(habitacion => {
+                const ocupada = habitacion.ocupada === 1 ? ' (Ocupada)' : ' (Libre)';
+                const option = document.createElement('option');
+                option.value = habitacion.numeroHabitacion;
+                option.textContent = `Habitación ${habitacion.numeroHabitacion}${ocupada}`;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error al cargar las habitaciones:', error));
+}
+
+// Llamar a la función al abrir el modal
+document.getElementById('assignProductModal').addEventListener('show', cargarHabitacionesAsignar);
+
+// Función para cargar habitaciones en el modal de "Asignar Habitación"
+function cargarHabitaciones() {
+    fetch('/api/habitaciones')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener las habitaciones.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const roomSelect = document.getElementById('roomNumber'); // ID del <select> en el modal
+            roomSelect.innerHTML = '<option value="">Seleccione una habitación</option>'; // Limpiar las opciones existentes
+
+            data.forEach(habitacion => {
+                const ocupada = habitacion.ocupada === 1 ? ' (Ocupada)' : ' (Libre)';
+                const option = document.createElement('option');
+                option.value = habitacion.numeroHabitacion;
+                option.textContent = `Habitación ${habitacion.numeroHabitacion}${ocupada}`;
+                roomSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar las habitaciones:', error);
+        });
+}
+
+// Llamar a la función al abrir el modal
+document.getElementById('assignProductModal').addEventListener('show', cargarHabitaciones);
+
+function obtenerTodasLasHabitaciones() {
+    fetch('/api/habitaciones')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('numeroHabitacion'); // ID del <select> en el modal de "Reserva"
+            select.innerHTML = '<option value="">Seleccione una habitación</option>';
+
+            data.forEach(habitacion => {
+                const ocupada = habitacion.ocupada === 1 ? ' (Ocupada)' : ' (Libre)';
+                const option = document.createElement('option');
+                option.value = habitacion.numeroHabitacion;
+                option.textContent = `Habitación ${habitacion.numeroHabitacion} ${ocupada}`;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error al obtener habitaciones:', error));
+}

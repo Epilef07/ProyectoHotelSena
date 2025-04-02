@@ -103,188 +103,194 @@
                     </svg>
                 </a>
             </div>
-            <!--Ya empieza todo dentro de los el menu-->
-            <div class="projects-section scrollable">
-                <div class="projects-section-header">
-                    <p>MINIBAR</p>
+           <!--Ya empieza todo dentro de los el menu-->
+           <div class="projects-section scrollable">
+            <div class="projects-section-header">
+                <p>MINIBAR</p>
+            </div>
+            <!-- Agrega el info-cards aquí -->
+            <div class="info-cards">
+                <div class="info-card large" style="justify-content: flex-start;">
+                    <button class="add-product-btn" id="openModalBtn">Agregar productos</button>
                 </div>
-                <!-- Agrega el info-cards aquí -->
-                <div class="info-cards">
-                    <div class="info-card large">
-                        <button class="add-product-btn" id="openModalBtn" style="font-size: 1.2em; padding: 10px 20px; display: block; margin: 0 auto; background-color: #4CAF50;">Agregar productos</button>
-                    </div>
-                    <div class="info-card large">
-                        <div class="search-container">
-                            <button class="search-btn" id="searchBtn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
-                                </svg>
-                            </button>
-                            <select class="search-select" id="searchRef">
-                                <option value="">Seleccionar</option>
-                                <option value="todos">Todos</option>
-                                <option value="bebidas-energeticas">Bebidas energéticas</option>
-                                <option value="galletas">Galletas</option>
-                                <option value="golosinas">Golosinas</option>
-                                <option value="snaks">Snaks</option>
-                                <option value="gaseosas">Gaseosas</option>
-                                <option value="paqueteria">Paquetería</option>
-                            </select>
-                            <input type="text" class="search-input" id="searchName" placeholder="Buscar por nombre">
-                        </div>
+                <div class="info-card large">
+                    <div class="search-container">
+                        <button class="search-btn" id="searchBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                            </svg>
+                        </button>
+                        <select class="search-select" id="searchRef">
+                            <option value="todos">Todos</option>
+                            <option value="galletas">Galletas</option>
+                            <option value="golosinas">Golosinas</option>
+                            <option value="gaseosas">Gaseosas</option>
+                            <option value="paqueteria">Paquetería</option>
+                        </select>
+                        <input type="text" class="search-input" id="searchName" placeholder="Buscar por nombre">
                     </div>
                 </div>
-                <div id="productCards" class="info-cards">
-                    <!-- Aquí se agregarán los productos dinámicamente -->
-                    <!-- Ejemplo de producto con mayor tamaño y legibilidad -->
-                    <div class="product-card" style="font-size: 1.5em; padding: 20px; border: 1px solid #ccc; margin-bottom: 15px; border-radius: 10px; background-color: #f9f9f9;">
-                        <p><strong>Nombre:</strong> Producto Ejemplo</p>
-                        <p><strong>Referencia:</strong> Galletas</p>
-                        <p><strong>Precio:</strong> $10.00</p>
-                        <p><strong>Cantidad:</strong> 5</p>
-                    </div>
+                <div class="info-card large" style="justify-content: flex-start;">
+                    <button class="add-product-btn" id="addToExistingBtn">Agregar a existente</button>
                 </div>
+            </div>
+            <div id="productCards" class="info-cards">
+                <!-- Aquí se agregarán los productos dinámicamente al cargar la página -->
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModalBtn">&times;</span>
-            <h2>Agregar Producto</h2>
-            <form id="productForm">
-                <label for="productName">Nombre del producto:</label>
-                <input type="text" id="productName" name="productName" required>
-                
-                <label for="productRef">Referencia:</label>
-                <select id="productRef" name="productRef" required>
-                    <option value="bebidas-energeticas">Bebidas energéticas</option>
-                    <option value="galletas">Galletas</option>
-                    <option value="golosinas">Golosinas</option>
-                    <option value="snaks">Snaks</option>
-                    <option value="gaseosas">Gaseosas</option>
-                    <option value="paqueteria">Paquetería</option>
-                </select>
-                
-                <label for="productPrice">Precio:</label>
-                <input type="number" id="productPrice" name="productPrice" required>
-                
-                <label for="productQuantity">Cantidad:</label>
-                <input type="number" id="productQuantity" name="productQuantity" required>
-                
-                <button type="submit" class="add-product-btn">Agregar producto</button>
-            </form>
-            <div id="formMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
-        </div>
+<!-- Modal para asignar productos a habitaciones -->
+<div id="assignProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeAssignModalBtn">&times;</span>
+        <h2>Asignar Producto a Habitación</h2>
+        <form id="assignProductForm">
+            <label for="roomNumber">Número de Habitación:</label>
+            <select id="roomNumber" name="roomNumber" required>
+                <option value="">Seleccione una habitación</option>
+            </select>
+            
+            <label for="assignQuantity">Cantidad:</label>
+            <input type="number" id="assignQuantity" name="assignQuantity" required>
+            
+            <button type="submit" class="add-product-btn" id="modalSubmitButton">Asignar</button>
+        </form>
+        <div id="assignFormMessage" style="margin-top: 10px;"></div>
     </div>
+</div>
 
-    <!-- Modal para asignar/desasignar productos a habitaciones -->
-    <div id="assignProductModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeAssignModalBtn">&times;</span>
-            <h2 id="modalTitle">Asignar Producto a Habitación</h2> <!-- Cambiar dinámicamente el título -->
-            <form id="assignProductForm">
-                <label for="roomNumber">Número de Habitación:</label>
-                <select id="roomNumber" name="roomNumber" required>
-                    <!-- Las opciones se llenarán dinámicamente -->
-                </select>
-                
-                <label for="assignQuantity">Cantidad:</label>
-                <input type="number" id="assignQuantity" name="assignQuantity" required>
-                
-                <button type="submit" class="add-product-btn" id="modalSubmitButton">Asignar</button> <!-- Cambiar dinámicamente el texto -->
-            </form>
-            <div id="assignFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
-        </div>
+<!-- Modal para asignar/desasignar productos a habitaciones -->
+<div id="assignProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeAssignModalBtn">&times;</span>
+        <h2 id="modalTitle">Asignar Producto a Habitación</h2>
+        <form id="assignProductForm">
+            <label for="roomNumber">Número de Habitación:</label>
+            <select id="roomNumber" name="roomNumber" required>
+                <!-- Las opciones se llenarán dinámicamente -->
+            </select>
+            
+            <label for="assignQuantity">Cantidad:</label>
+            <input type="number" id="assignQuantity" name="assignQuantity" required>
+            
+            <button type="submit" class="add-product-btn" id="modalSubmitButton">Asignar</button>
+        </form>
+        <div id="assignFormMessage" style="margin-top: 10px;"></div>
     </div>
+</div>
 
-    <!-- Modal para desasignar productos de habitaciones -->
-    <div id="unassignProductModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeUnassignModalBtn">&times;</span>
-            <h2>Desasignar Producto de Habitación</h2>
-            <form id="unassignProductForm">
-                <label for="unassignRoomNumber">Número de Habitación:</label>
-                <select id="unassignRoomNumber" name="unassignRoomNumber" required>
-                    <!-- Las opciones se llenarán dinámicamente -->
-                </select>
-                
-                <label for="unassignQuantity">Cantidad:</label>
-                <input type="number" id="unassignQuantity" name="unassignQuantity" required>
-                
-                <button type="submit" class="add-product-btn">Desasignar</button>
-            </form>
-            <div id="unassignFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
-        </div>
+<!-- Modal para desasignar productos de habitaciones -->
+<div id="unassignProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeUnassignModalBtn">&times;</span>
+        <h2>Desasignar Producto de Habitación</h2>
+        <form id="unassignProductForm">
+            <label for="unassignRoomNumber">Habitaciones con asignaciones:</label>
+            <select id="unassignRoomNumber" name="unassignRoomNumber" required>
+                <!-- Las opciones se llenarán dinámicamente -->
+            </select>
+            
+            <label for="unassignQuantity">Cantidad a desasignar:</label>
+            <input type="number" id="unassignQuantity" name="unassignQuantity" min="1" required>
+            
+            <button type="submit" class="add-product-btn">Desasignar</button>
+        </form>
+        <div id="unassignFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
     </div>
-    <script>
-        // Alternar entre modo oscuro y claro
-        document.querySelector('.mode-switch').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            document.body.classList.toggle('light-mode');
-        });
+</div>
 
-        // Alternar visibilidad de la barra de navegación
-        document.getElementById('navbar-toggle').addEventListener('click', function() {
-            var sidebar = document.getElementById('app-sidebar');
-            sidebar.classList.toggle('hidden');
-        });
+<!-- Modal para agregar más cantidad a un producto existente -->
+<div id="addToExistingModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeAddToExistingModalBtn">&times;</span>
+        <h2>Agregar a Producto Existente</h2>
+        <form id="addToExistingForm">
+            <label for="existingProductId">ID del Producto:</label>
+            <input type="number" id="existingProductId" name="existingProductId" required>
+            
+            <label for="additionalQuantity">Cantidad a Agregar:</label>
+            <input type="number" id="additionalQuantity" name="additionalQuantity" required>
+            
+            <button type="submit" class="add-product-btn">Agregar</button>
+        </form>
+        <div id="addToExistingFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
+    </div>
+</div>
 
-        // Cargar productos al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
-        });
+<!-- Modal para eliminar productos -->
+<div id="deleteProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeDeleteProductModalBtn">&times;</span>
+        <h2>Eliminar Producto</h2>
+        <form id="deleteProductForm">
+            <label for="deleteProductId">ID del Producto:</label>
+            <input type="number" id="deleteProductId" name="deleteProductId" required>
+            
+            <p style="color: red;">¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.</p>
+            
+            <button type="submit" class="add-product-btn">Eliminar</button>
+        </form>
+        <div id="deleteFormMessage" style="margin-top: 10px;"></div> <!-- Mensaje de estado -->
+    </div>
+</div>
 
-        // Manejar la búsqueda de productos
-        document.getElementById('searchBtn').addEventListener('click', function() {
-            searchProducts();
-        });
-function openEditModal(productId) {
-    const editModal = document.getElementById('productModal');
-    editModal.style.display = 'block';
+<!-- Modal para agregar productos al minibar -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>Agregar Producto al Minibar</h2>
+        <form id="productForm">
+            <label for="productName">Nombre del producto:</label>
+            <input type="text" id="productName" name="productName" required>
+            
+            <label for="productRef">Referencia:</label>
+            <select id="productRef" name="productRef" required>
+                <option value="galletas">Galletas</option>
+                <option value="golosinas">Golosinas</option>
+                <option value="gaseosas">Gaseosas</option>
+                <option value="paqueteria">Paquetería</option>
+            </select>
+            
+            <label for="productPrice">Precio:</label>
+            <input type="number" id="productPrice" name="productPrice" step="0.01" required>
+            
+            <label for="productQuantity">Cantidad:</label>
+            <input type="number" id="productQuantity" name="productQuantity" required>
+            
+            <button type="submit" class="add-product-btn">Guardar Producto</button>
+        </form>
+        <div id="formMessage" style="margin-top: 10px;"></div>
+    </div>
+</div>
 
-    // Hacer una solicitud al backend para obtener los datos del producto
-    fetch(`/api/productos/${productId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(product => {
-            // Llenar el formulario del modal con los datos del producto
-            document.getElementById('productName').value = product.nombre;
-            document.getElementById('productRef').value = product.referencia;
-            document.getElementById('productPrice').value = product.precio;
-            document.getElementById('productQuantity').value = product.cantidad;
+<script src="/JS/minibar.js"></script>
+<script>
+    // Alternar entre modo oscuro y claro
+    document.querySelector('.mode-switch').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        document.body.classList.toggle('light-mode');
+    });
 
-            // Configurar el atributo data-product-id en el formulario
-            document.getElementById('productForm').setAttribute('data-product-id', productId);
+    // Alternar visibilidad de la barra de navegación
+    document.getElementById('navbar-toggle').addEventListener('click', function() {
+        var sidebar = document.getElementById('app-sidebar');
+        sidebar.classList.toggle('hidden');
+    });
 
-            // Cambiar el evento de envío del formulario para actualizar el producto
-            document.getElementById('productForm').onsubmit = function (event) {
-                event.preventDefault();
-                updateProduct(productId);
-            };
-        })
-        .catch(error => {
-            console.error('Error al cargar los datos del producto:', error);
-        });
-}
-
-
-        function cerrarSesion() {
-            localStorage.removeItem('nombreUsuario');
+    // Mostrar el nombre del usuario al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        const nombreUsuario = localStorage.getItem('nombreUsuario');
+        if (nombreUsuario) {
+            document.getElementById('nombre-usuario').textContent = nombreUsuario;
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            const nombreUsuario = localStorage.getItem('nombreUsuario');
-            if (nombreUsuario) {
-                document.getElementById('nombre-usuario').textContent = nombreUsuario;
-            }
-        });
-        // Exponer la función al ámbito global
-window.openEditModal = openEditModal;
-    </script>
+    });
+
+    // Función para cerrar sesión
+    function cerrarSesion() {
+        localStorage.removeItem('nombreUsuario');
+    }
+</script>
 </body>
 </html>

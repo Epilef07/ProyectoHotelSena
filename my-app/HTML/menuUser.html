@@ -110,9 +110,9 @@
                     </svg>
                 </a>
             </div>
-            <!--Ya empieza todo dentro de los el menu-->
+              <!--Ya empieza todo dentro de los el menu-->
              
-            <div class="projects-section scrollable">
+              <div class="projects-section scrollable">
                 <div class="projects-section-header" style="margin-bottom: 0px;">
                     <!-- <p>BIENVENIDO</p> -->
                     
@@ -183,11 +183,12 @@
             </label>
 
             <div id="editarDetalleMinibar" style="display: none;">
-                <label for="editarProductoMinibar">Producto:</label>
-                <input type="text" id="editarProductoMinibar" name="editarProductoMinibar">
-
-                <label for="editarCantidadMinibar">Cantidad:</label>
-                <input type="number" id="editarCantidadMinibar" name="editarCantidadMinibar">
+                <div id="editarMinibarContainer">
+                    <h3>Productos del Minibar</h3>
+                    <div id="editarMinibarProductos">
+                        <!-- Aquí se agregarán los productos dinámicamente -->
+                    </div>
+                </div>
             </div>
 
             <!-- ✅ Botón para agregar acompañantes -->
@@ -196,7 +197,6 @@
             <div id="editarAcompanantesContainer">
                 <!-- Aquí se agregarán los acompañantes dinámicamente -->
             </div>
-
             <button type="button" onclick="guardarEdicionReserva()">Guardar Cambios</button>
         </form>
     </div>
@@ -544,7 +544,7 @@ function editarReserva(codigoReserva) {
             document.getElementById('editarFechaIngreso').value = data.fechaIngreso.split('T')[0];
             document.getElementById('editarFechaSalida').value = data.fechaSalida.split('T')[0];
             document.getElementById('editarAbono').value = data.abono;
-            document.getElementById('editarCantidadAcompanantes').value = data.cantidadAcompañante || 0;
+            document.getElementById('editarCantidadAcompanantes').value = data.cantidadAcompanante || 0;
 
             // Seleccionar el radio button de tipo de persona
             const tipoPersonaRadios = document.getElementsByName('editarTipoPersona');
@@ -567,6 +567,9 @@ function editarReserva(codigoReserva) {
 
                 container.appendChild(acompananteDiv);
             });
+
+            // Cargar los productos del minibar
+            cargarProductosMinibar(codigoReserva);
 
             // Mostrar el modal
             document.getElementById('editarReservaModal').style.display = 'block';
@@ -639,12 +642,19 @@ function eliminarReserva(codigoReserva) {
         fechaIngreso: document.getElementById('editarFechaIngreso').value,
         fechaSalida: document.getElementById('editarFechaSalida').value,
         abono: document.getElementById('editarAbono').value || 0,
-        cantidadAcompañante: document.getElementById('editarCantidadAcompanantes').value || 0,
+        cantidadAcompanante: document.getElementById('editarCantidadAcompanantes').value || 0,
         minibar: document.getElementById('editarUsoMinibar').checked
-            ? {
-                  producto: document.getElementById('editarProductoMinibar').value,
-                  cantidad: document.getElementById('editarCantidadMinibar').value
-              }
+            ? Array.from(document.querySelectorAll('#editarMinibarProductos .producto-minibar'))
+                  .map(productoDiv => {
+                      const productoId = productoDiv.querySelector('input.cantidad-consumida').dataset.productoId;
+                      const cantidadConsumida = productoDiv.querySelector('input.cantidad-consumida').value;
+
+                      return {
+                          productoId: parseInt(productoId, 10),
+                          cantidadConsumida: parseInt(cantidadConsumida, 10)
+                      };
+                  })
+                  .filter(producto => producto.cantidadConsumida > 0) // Filtrar productos con cantidad mayor a 0
             : null,
         acompanantes: Array.from(
             document.querySelectorAll('#editarAcompanantesContainer .acompanante')
@@ -678,10 +688,12 @@ function eliminarReserva(codigoReserva) {
             return response.json();
         })
         .then(() => {
+            // Guardar el consumo del minibar
+            guardarConsumoMinibar(codigoReserva);
+
             Swal.fire('Reserva actualizada', 'Los cambios han sido guardados.', 'success').then(() => {
                 document.getElementById('editarReservaModal').style.display = 'none';
                 obtenerReservas();
-                actualizarCalendario();
             });
         })
         .catch(error => {
@@ -885,6 +897,73 @@ function eliminarReserva(codigoReserva) {
 function cerrarSesion() {
             localStorage.removeItem('nombreUsuario');
         }
+
+function cargarProductosMinibar(codigoReserva) {
+    fetch(`/api/reserva/${codigoReserva}/minibar`)
+        .then(response => response.json())
+        .then(data => {
+            const minibarContainer = document.getElementById('editarMinibarProductos');
+            minibarContainer.innerHTML = ''; // Limpiar el contenido existente
+
+            if (data.success && data.productos.length > 0) {
+                data.productos.forEach(producto => {
+                    const productoDiv = document.createElement('div');
+                    productoDiv.classList.add('producto-minibar');
+
+                    productoDiv.innerHTML = `
+                        <label>${producto.producto} (${producto.cantidadAsignada || 0} asignados):</label>
+                        <input type="number" min="0" max="${producto.cantidadAsignada || 0}" 
+                               value="${producto.cantidadConsumida || 0}" 
+                               data-producto-id="${producto.productoId}" 
+                               class="cantidad-consumida">
+                    `;
+
+                    minibarContainer.appendChild(productoDiv);
+                });
+            } else {
+                minibarContainer.innerHTML = '<p>No hay productos asignados al minibar de esta habitación.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar los productos del minibar:', error);
+        });
+}
+
+function guardarConsumoMinibar(codigoReserva) {
+    // Obtener los productos consumidos del minibar
+    const productosConsumidos = Array.from(document.querySelectorAll('#editarMinibarProductos .producto-minibar'))
+        .map(productoDiv => {
+            const productoId = productoDiv.querySelector('input.cantidad-consumida').dataset.productoId;
+            const cantidadConsumida = productoDiv.querySelector('input.cantidad-consumida').value;
+
+            return {
+                productoId: parseInt(productoId, 10),
+                cantidadConsumida: parseInt(cantidadConsumida, 10)
+            };
+        })
+        .filter(producto => producto.cantidadConsumida > 0); // Filtrar productos con cantidad mayor a 0
+
+    // Enviar los productos consumidos al backend
+    if (productosConsumidos.length > 0) {
+        fetch(`/api/reserva/${codigoReserva}/minibar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productos: productosConsumidos })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al guardar los productos consumidos del minibar');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Productos consumidos del minibar guardados correctamente:', data);
+            })
+            .catch(error => {
+                console.error('Error al guardar los productos consumidos del minibar:', error);
+            });
+    }
+}
 </script>
 </body>
 </html>
